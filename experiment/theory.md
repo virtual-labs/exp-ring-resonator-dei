@@ -16,7 +16,7 @@ A ring resonator has a high quality factor which indicates low energy loss with 
 
 Ring resonators are widely used in microwave filters oscillators frequency selective circuits sensors dielectric constant measurement wireless communication systems RF integrated circuits. Their compact size high selectivity simple structure make them suitable for modern microwave applications.
 
-**Advantages**
+**Advantages**<br>
 Compact size<br>
 High quality factor<br>
 High frequency selectivity<br>
