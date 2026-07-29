@@ -2,35 +2,86 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "1. Which transmission line is commonly used to implement microwave ring resonators?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Twisted pair",
+        "b": "Microstrip line",
+        "c": "DC wire",
+        "d": "Ribbon cable"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. Twisted pair cables are not suitable for implementing microwave ring resonators.",
+        "b": "Correct. Microstrip lines are commonly used to fabricate microwave ring resonators due to their planar structure and ease of integration.",
+        "c": "Incorrect. DC wires are not used for microwave resonator implementation.",
+        "d": "Incorrect. Ribbon cables are not designed for microwave ring resonator applications."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "2. Resonance occurs when:",
+      "answers": {
+        "a": "The operating frequency equals the natural frequency",
+        "b": "Current becomes zero",
+        "c": "Voltage becomes zero",
+        "d": "Resistance becomes infinite"
+      },
+      "explanations": {
+        "a": "Correct. Resonance occurs when the operating frequency matches the natural resonant frequency of the system.",
+        "b": "Incorrect. Current does not necessarily become zero at resonance.",
+        "c": "Incorrect. Voltage does not become zero at resonance.",
+        "d": "Incorrect. Infinite resistance is not the general condition for resonance."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "3. Which parameter determines the electrical length of a transmission line?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Physical length and wavelength",
+        "b": "Wire color",
+        "c": "Current rating only",
+        "d": "Power supply type"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct. The electrical length depends on the physical length of the transmission line and the guided wavelength.",
+        "b": "Incorrect. Wire color has no effect on electrical length.",
+        "c": "Incorrect. Current rating does not determine electrical length.",
+        "d": "Incorrect. The type of power supply does not affect electrical length."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "4. Microwave ring resonators are mainly used in:",
+      "answers": {
+        "a": "Low-frequency power circuits",
+        "b": "Microwave filters, oscillators, and sensors",
+        "c": "Battery charging circuits",
+        "d": "Audio amplifiers"
+      },
+      "explanations": {
+        "a": "Incorrect. Microwave ring resonators are not intended for low-frequency power circuits.",
+        "b": "Correct. They are widely used in microwave filters, oscillators, sensors, and communication systems.",
+        "c": "Incorrect. They are not used in battery charging circuits.",
+        "d": "Incorrect. Audio amplifiers operate at much lower frequencies."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "5. The guided wavelength (λ_g) in a transmission line is generally:",
+      "answers": {
+        "a": "Greater than the free-space wavelength",
+        "b": "Equal to the free-space wavelength in all cases",
+        "c": "Less than the free-space wavelength due to the dielectric medium",
+        "d": "Zero"
+      },
+      "explanations": {
+        "a": "Incorrect. The guided wavelength is usually not greater than the free-space wavelength.",
+        "b": "Incorrect. It is equal only in free space, not in dielectric transmission lines.",
+        "c": "Correct. Due to the dielectric medium, electromagnetic waves travel slower, making the guided wavelength shorter than the free-space wavelength.",
+        "d": "Incorrect. The guided wavelength is never zero."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"

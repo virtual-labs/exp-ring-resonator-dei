@@ -2,37 +2,105 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "1. A ring resonator is primarily used as a:",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Power supply",
+        "b": "Resonant microwave circuit",
+        "c": "Transformer",
+        "d": "Rectifier"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. A ring resonator is not used as a power supply.",
+        "b": "Correct. A ring resonator is a resonant microwave circuit used for frequency-selective applications and microwave measurements.",
+        "c": "Incorrect. A ring resonator does not function as a transformer.",
+        "d": "Incorrect. A ring resonator is not used for rectification."
       },
-      "correctAnswer": "a",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "2. A ring resonator is generally fabricated using:",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Twisted pair cable",
+        "b": "Microstrip or stripline",
+        "c": "Optical fiber only",
+        "d": "Coaxial connector only"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. Twisted pair cables are not used to fabricate ring resonators.",
+        "b": "Correct. Ring resonators are commonly implemented using microstrip or stripline technology.",
+        "c": "Incorrect. Ring resonators are not fabricated using optical fiber alone.",
+        "d": "Incorrect. Coaxial connectors are used for connections, not for fabricating the resonator."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "3. A ring resonator exhibits resonance when its circumference is approximately:",
+      "answers": {
+        "a": "λ/4",
+        "b": "λ/2",
+        "c": "nλ (integer multiple of the guided wavelength)",
+        "d": "2λ/3"
+      },
+      "explanations": {
+        "a": "Incorrect. A quarter wavelength is not the resonance condition for a ring resonator.",
+        "b": "Incorrect. Half wavelength is not the required circumference for ring resonance.",
+        "c": "Correct. Resonance occurs when the ring circumference is an integer multiple of the guided wavelength.",
+        "d": "Incorrect. Two-thirds wavelength is not the resonance condition."
       },
       "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "4. The resonant frequency of a ring resonator mainly depends on:",
+      "answers": {
+        "a": "Supply voltage",
+        "b": "Ring circumference and dielectric constant",
+        "c": "Load current only",
+        "d": "Ambient temperature only"
+      },
+      "explanations": {
+        "a": "Incorrect. Supply voltage does not determine the resonant frequency.",
+        "b": "Correct. The resonant frequency is primarily determined by the ring circumference and the substrate dielectric constant.",
+        "c": "Incorrect. Load current alone does not affect the resonant frequency.",
+        "d": "Incorrect. Ambient temperature has only a minor indirect effect."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "5. The coupling gap in a ring resonator controls the:",
+      "answers": {
+        "a": "Power supply voltage",
+        "b": "Coupling between the feed line and the resonator",
+        "c": "Dielectric constant",
+        "d": "Current rating"
+      },
+      "explanations": {
+        "a": "Incorrect. The coupling gap does not affect the power supply voltage.",
+        "b": "Correct. The coupling gap determines the strength of coupling between the feed line and the ring resonator.",
+        "c": "Incorrect. The dielectric constant is a property of the substrate material.",
+        "d": "Incorrect. The coupling gap does not determine the current rating."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "6. Which parameter indicates the sharpness of resonance?",
+      "answers": {
+        "a": "Voltage gain",
+        "b": "Quality factor (Q-factor)",
+        "c": "Power factor",
+        "d": "Current gain"
+      },
+      "explanations": {
+        "a": "Incorrect. Voltage gain does not indicate resonance sharpness.",
+        "b": "Correct. The Quality factor (Q-factor) measures how sharp and selective the resonance is.",
+        "c": "Incorrect. Power factor is related to AC power systems, not resonance sharpness.",
+        "d": "Incorrect. Current gain is associated with amplifiers, not resonators."
+      },
+      "correctAnswer": "b",
       "difficulty": "beginner"
     }
   ]
