@@ -8,13 +8,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f1f5f9;--sur:#ffffff;--card:#ffffff;--bdr:#e2e8f0;--bdr2:#cbd5e1;
-  --blue:#0284c7;--purple:#7c3aed;--amber:#d97706;--green:#059669;--red:#dc2626;
-  --txt:#1e293b;--muted:#64748b;--dim:#94a3b8;
-  --mono:'Courier New',Courier,monospace;
+  --bg:#eef1f5;--sur:#ffffff;--card:#ffffff;--panel:#f8fafc;--bdr:#e2e8f0;--bdr2:#cbd5e1;
+  --blue:#0284c7;--blue-dk:#0369a1;--purple:#7c3aed;--amber:#d97706;--green:#059669;--red:#dc2626;
+  --txt:#182233;--muted:#5b6b7c;--dim:#94a3b8;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --radius:10px;--radius-sm:6px;
 }
-body{background:var(--bg);color:var(--txt);font-family:system-ui,sans-serif;font-size:16px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(15,23,42,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.025) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(15,23,42,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.02) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;z-index:0}
 
 /* SCROLLBARS */
 ::-webkit-scrollbar{width:8px;height:8px}
@@ -22,175 +24,447 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
 ::-webkit-scrollbar-track{background:transparent}
 
-/* TOPBAR */
-#topbar{height:46px;background:var(--card);border-bottom:1px solid var(--bdr);display:flex;align-items:center;position:relative;z-index:20;flex-shrink:0;box-shadow:0 1px 2px rgba(15,23,42,.04)}
-.logo{width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--bdr);font-family:var(--mono);font-size:15px;color:var(--blue);font-weight:bold;flex-shrink:0}
-#apibadge{margin-left:auto;margin-right:14px;font-size:13px;font-family:var(--mono);color:var(--muted)}
+/* HEADER */
+#topbar{height:56px;background:var(--sur);border-bottom:1px solid var(--bdr);display:flex;align-items:center;position:relative;z-index:20;flex-shrink:0;padding:0 18px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-dk));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;color:#fff;font-weight:700;flex-shrink:0}
+.brand-txt{display:flex;flex-direction:column;line-height:1.2}
+.brand-txt b{font-size:14px;font-weight:600;color:var(--txt)}
+.brand-txt span{font-size:11.5px;color:var(--muted)}
+#exptitle{flex:1;display:flex;align-items:center;justify-content:center;gap:10px}
+#expname{font-size:16px;font-weight:600;color:var(--txt);letter-spacing:.005em}
+#expsub{font-size:12px;color:var(--dim);padding:2px 8px;border:1px solid var(--bdr);border-radius:20px}
+#apibadge{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);white-space:nowrap;margin-left:auto}
+#apibadge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.15)}
+
+/* TOP NAV (replaces sidebar) */
+#topnav{height:46px;background:var(--sur);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 18px;gap:2px;flex-shrink:0;position:relative;z-index:15}
+.tnav{display:flex;align-items:center;gap:2px}
+.tnav-item{display:flex;align-items:center;gap:7px;padding:0 15px;height:46px;font-size:14.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;user-select:none;white-space:nowrap}
+/* Part 8: keyboard-focus visibility for the clickable <div> controls
+   (top nav, result tabs, collapse header, close buttons) — these act as
+   buttons via onclick but weren't reachable/visible on Tab before. */
+.tnav-item:focus-visible,.tnav-ref:focus-visible,.rtab:focus-visible,.rpx:focus-visible{outline:2px solid var(--blue);outline-offset:-2px;border-radius:4px}
+.wcard-hd[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+.tnav-item .ic{font-size:14px;opacity:.8}
+.tnav-item:hover{color:var(--txt)}
+.tnav-item.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tnav-item.on .ic{opacity:1}
+.tnav-num{width:16px;height:16px;border-radius:3px;background:rgba(2,132,199,.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--mono);color:var(--muted)}
+.tnav-item.on .tnav-num{background:rgba(2,132,199,.16);color:var(--blue)}
+#topnav-ref{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tnav-div{width:1px;height:22px;background:var(--bdr);margin:0 6px}
+.tnav-ref{font-size:13px;color:var(--dim);cursor:pointer;padding:5px 10px;border-radius:6px;transition:all .15s}
+.tnav-ref:hover{color:var(--blue);background:rgba(2,132,199,.06)}
+.tnav-ref.on{color:var(--blue);background:rgba(2,132,199,.08)}
 
 /* SHELL */
 #shell{flex:1;display:flex;overflow:hidden;position:relative;z-index:5}
-
-/* MODULE WRAP */
 #modwrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-/* SIDEBAR */
-#sidebar{width:174px;background:var(--sur);border-right:1px solid var(--bdr);flex-shrink:0;padding:12px 0;overflow-y:auto}
-.sb-lbl{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 12px 3px;display:block}
-.sb-item{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:1px 10px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:500;color:var(--muted);transition:all .15s;user-select:none}
-.sb-item:hover{color:var(--txt);background:rgba(255,255,255,.04)}
-.sb-item.on{color:var(--blue);background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.18)}
-.sb-ic{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(255,255,255,.04);flex-shrink:0}
-.sb-item.on .sb-ic{background:rgba(56,189,248,.15)}
-.sb-div{height:1px;background:var(--bdr);margin:6px 12px}
-
-
-
-/* SUBTABS */
-#stabs{display:flex;border-bottom:1px solid var(--bdr);background:var(--sur);flex-shrink:0}
-.stab{padding:11px 20px;font-size:15px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:7px;user-select:none;white-space:nowrap}
-.stab:hover{color:var(--txt)}.stab.on{color:var(--blue);border-bottom-color:var(--blue)}
-.snum{width:17px;height:17px;border-radius:3px;background:rgba(2,132,199,.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono)}
-.stab.on .snum{background:rgba(2,132,199,.18);color:var(--blue)}
-
-/* SUB PAGES — scrollable so long content and tall design panels are always reachable */
+/* SUB PAGES */
 #subwrap{flex:1;overflow:hidden;display:flex;flex-direction:column}
 .sp{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sp.on{display:flex;flex-direction:column}
 
-/* CONTENT PAGES */
-.cpg{padding:26px 30px;max-width:860px}
-.shero{border-left:3px solid var(--blue);padding:14px 18px;background:rgba(2,132,199,.05);border-radius:0 7px 7px 0;margin-bottom:20px}
-.shero h1{font-size:21px;font-weight:600;color:var(--txt);margin-bottom:5px}
-.shero p{font-size:15px;color:var(--muted);line-height:1.7}
-.sh2{font-size:16px;font-weight:600;color:var(--txt);margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+/* CONTENT PAGES (Concept / Theory / Why 50) */
+.cpg{padding:32px 30px 60px;max-width:820px;width:100%;margin:0 auto}
+.shero{border-left:3px solid var(--blue);padding:16px 20px;background:rgba(2,132,199,.05);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:22px}
+.shero h1{font-size:22px;font-weight:600;color:var(--txt);margin-bottom:6px}
+.shero p{font-size:14.5px;color:var(--muted);line-height:1.7}
+.sh2{font-size:15px;font-weight:600;color:var(--txt);margin:22px 0 11px;display:flex;align-items:center;gap:8px}
 .sh2::after{content:'';flex:1;height:1px;background:var(--bdr)}
-.cc{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
-.cc h3{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:7px;display:flex;align-items:center;gap:7px}
-.cc p,.cc li{font-size:15px;color:var(--muted);line-height:1.7}
+.cc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius);padding:15px 17px;margin-bottom:10px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.cc h3{font-size:14.5px;font-weight:600;color:var(--txt);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.cc p,.cc li{font-size:14.5px;color:var(--muted);line-height:1.7}
 .cc ul{padding-left:16px;margin-top:5px}
 .twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ib{background:rgba(217,119,6,.07);border-left:2px solid var(--amber);padding:9px 12px;border-radius:0 5px 5px 0;font-size:14px;color:#92400e;line-height:1.6;margin:10px 0}
-.kb{background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.2);border-radius:6px;padding:10px 13px;font-size:14px;color:#065f46;line-height:1.6;margin:10px 0}
-.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:12px;font-family:var(--mono)}
+.ib{background:rgba(217,119,6,.07);border-left:2px solid var(--amber);padding:10px 13px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13.5px;color:#92400e;line-height:1.6;margin:10px 0}
+.kb{background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.2);border-radius:var(--radius-sm);padding:11px 14px;font-size:13.5px;color:#065f46;line-height:1.6;margin:10px 0}
+.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11.5px;font-family:var(--mono)}
 .tb{background:rgba(2,132,199,.10);color:var(--blue)}.tp{background:rgba(124,58,237,.10);color:var(--purple)}
 .tg{background:rgba(5,150,105,.10);color:var(--green)}.ta{background:rgba(217,119,6,.10);color:var(--amber)}
 
 /* FORMULA PAGE */
-.fb{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
-.flbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.feq{background:#f1f5f9;border:1px solid var(--bdr);border-radius:5px;padding:12px 16px;font-family:var(--mono);font-size:15px;color:var(--txt);overflow-x:auto;line-height:2;margin:6px 0}
+.fb{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius);padding:15px 17px;margin-bottom:12px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.flbl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.feq{background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:12px 16px;font-family:var(--mono);font-size:14.5px;color:var(--txt);overflow-x:auto;line-height:2;margin:6px 0}
 .feq .s{color:var(--blue)}.feq .p{color:var(--purple)}.feq .g{color:var(--green)}.feq .a{color:var(--amber)}
-.fdsc{font-size:14px;color:var(--muted);line-height:1.7;margin-top:7px}
+.fdsc{font-size:13.5px;color:var(--muted);line-height:1.7;margin-top:7px}
 .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
-.vi{background:rgba(2,132,199,.04);border:1px solid var(--bdr);border-radius:5px;padding:7px 9px}
-.vs{font-family:var(--mono);font-size:14px;color:var(--blue);margin-bottom:2px}
-.vd{font-size:13px;color:var(--muted);line-height:1.4}
+.vi{background:rgba(2,132,199,.04);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:7px 9px}
+.vs{font-family:var(--mono);font-size:13.5px;color:var(--blue);margin-bottom:2px}
+.vd{font-size:12.5px;color:var(--muted);line-height:1.4}
 
-/* DESIGN & SIM PAGE */
+/* ============ DESIGN & SIMULATION PAGE ============ */
 #dsp{display:none;flex-direction:column;flex:1;min-height:0}
 #dsp.on{display:flex}
+.dspwrap{padding:20px 24px 40px;max-width:1440px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 
-/* Design params block */
-#dpblk{flex-shrink:0;border-bottom:1px solid var(--bdr)}
-#dphdr{padding:9px 18px;background:var(--sur);display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
-#dphdr h3{font-size:15px;font-weight:600;color:var(--txt)}
-#dphdr .hint{font-size:13px;color:var(--muted);margin-left:4px}
-#dpArr{margin-left:auto;font-size:14px;color:var(--muted);transition:transform .2s}
-#dpbdy{padding:14px 18px}
-#dpgrid{display:grid;gap:11px}
-.dpf label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.dprow{display:flex;align-items:stretch;background:var(--sur);border:1px solid var(--bdr);border-radius:6px;overflow:hidden;transition:border-color .15s}
-.dprow:focus-within{border-color:var(--blue)}
-.dprow input{flex:1;padding:7px 9px;background:transparent;border:none;color:var(--txt);font-family:var(--mono);font-size:15px;outline:none;min-width:0}
-.dpu{padding:0 9px;background:rgba(2,132,199,.07);border-left:1px solid var(--bdr);font-family:var(--mono);font-size:12px;color:var(--blue);white-space:nowrap;display:flex;align-items:center}
-.dph{font-size:12px;color:var(--dim);margin-top:3px}
-#dplive{display:grid;gap:7px;margin-top:12px}
-.lvc{background:var(--sur);border:1px solid var(--bdr);border-radius:6px;padding:7px 9px}
+/* Section eyebrow */
+.sec-head{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.sec-num{width:20px;height:20px;border-radius:5px;background:rgba(2,132,199,.10);color:var(--blue);font-family:var(--mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-head h2{font-size:14.5px;font-weight:600;color:var(--txt)}
+.sec-head .sec-hint{font-size:12.5px;color:var(--dim);margin-left:2px}
+
+/* Objective card */
+.objcard{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(180deg,rgba(2,132,199,.045),rgba(2,132,199,.015));border:1px solid rgba(2,132,199,.16);border-radius:var(--radius);padding:13px 16px}
+.objcard .oic{width:30px;height:30px;border-radius:8px;background:rgba(2,132,199,.12);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.objcard b{font-size:13px;color:var(--blue-dk);display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;font-size:11.5px}
+.objcard p{font-size:13.5px;color:var(--muted);line-height:1.6}
+
+/* Workspace grid: Params | Geometry | Results */
+.workspace{display:grid;grid-template-columns:308px 1fr 320px;gap:16px;align-items:start}
+
+.wcard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.03);display:flex;flex-direction:column;overflow:hidden}
+.wcard.params-card{overflow:visible}
+.wcard-hd{padding:11px 15px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.wcard-hd h3{font-size:13.5px;font-weight:600;color:var(--txt)}
+.wcard-hd .sub{font-size:11.5px;color:var(--dim);margin-left:auto}
+.wcard-bd{padding:14px 15px}
+
+/* -- Design Parameters column -- */
+#dphdr{cursor:pointer;user-select:none}
+#dpArr{margin-left:auto;font-size:12px;color:var(--muted);transition:transform .2s}
+#dpbdy{padding:14px 15px}
+.pgroup{margin-bottom:18px}
+.pgroup:last-child{margin-bottom:0}
+.pgroup-lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.pgroup-lbl::after{content:'';flex:1;height:1px;background:var(--bdr)}
+#dpgrid{display:flex;flex-direction:column;gap:0}
+
+/* dp-warn banner: shown only when the current combination is invalid */
+.dp-warn{display:none;align-items:flex-start;gap:8px;background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.3);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:12px;font-size:12.5px;color:#92400e;line-height:1.55}
+.dp-warn.show{display:flex}
+.dp-warn .wic{flex-shrink:0;font-size:13px;line-height:1.3}
+.dp-warn ul{margin:2px 0 0 15px;padding:0}
+.dp-warn b{display:block;margin-bottom:1px;font-weight:600}
+
+.dpf{margin-bottom:11px;position:relative}
+.dpf:last-child{margin-bottom:0}
+.dpf-top{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:4px}
+.dpf-top label{font-size:12px;color:var(--muted);cursor:default}
+.dpf-sym{font-family:var(--mono);font-size:11px;color:var(--dim);opacity:.85;letter-spacing:.02em}
+.dpf-sym sub{font-size:9px}
+.dprow{display:flex;align-items:stretch;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius-sm);transition:border-color .15s,box-shadow .15s}
+.dprow:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(2,132,199,.1)}
+.dprow input{flex:1;padding:7px 9px;background:transparent;border:none;color:var(--txt);font-family:var(--mono);font-size:15px;font-weight:600;outline:none;min-width:0;width:0;border-radius:var(--radius-sm) 0 0 var(--radius-sm)}
+.dpu{padding:0 9px;background:var(--panel);border-left:1px solid var(--bdr);font-family:var(--mono);font-size:11.5px;color:var(--blue-dk);white-space:nowrap;display:flex;align-items:center}
+.hicon{width:16px;height:16px;border-radius:50%;border:none;background:var(--panel);border-left:1px solid var(--bdr);color:var(--dim);font-family:Georgia,serif;font-style:italic;font-size:10.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:help;padding:0;margin:0;width:24px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.hicon:hover,.hicon:focus-visible{color:var(--blue);background:rgba(2,132,199,.08);outline:none}
+.hicon:focus-visible{box-shadow:inset 0 0 0 2px var(--blue)}
+
+/* pure-CSS tooltip, shown on hover or keyboard focus */
+.dpf{overflow:visible}
+.hicon{position:relative}
+.hicon[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute; right:0; bottom:calc(100% + 7px);
+  width:210px; max-width:60vw;
+  background:var(--txt); color:#fff; font-family:var(--sans);
+  font-size:11.5px; font-weight:400; line-height:1.5; letter-spacing:0;
+  padding:8px 10px; border-radius:7px; text-align:left;
+  box-shadow:0 6px 18px rgba(15,23,42,.18);
+  opacity:0; visibility:hidden; transform:translateY(3px);
+  transition:opacity .12s,transform .12s; pointer-events:none; z-index:30;
+}
+.hicon[data-tip]::before{
+  content:''; position:absolute; right:6px; bottom:calc(100% + 3px);
+  border:5px solid transparent; border-top-color:var(--txt);
+  opacity:0; visibility:hidden; transition:opacity .12s; z-index:30;
+}
+.hicon[data-tip]:hover::after,.hicon[data-tip]:hover::before,
+.hicon[data-tip]:focus-visible::after,.hicon[data-tip]:focus-visible::before{
+  opacity:1; visibility:visible; transform:translateY(0);
+}
+
+/* field-level invalid state */
+.dprow.invalid{border-color:var(--red)}
+.dprow.invalid:focus-within{box-shadow:0 0 0 3px rgba(220,38,38,.12)}
+.dpf-msg{display:none;align-items:center;gap:4px;font-size:11px;color:var(--red);margin-top:3px}
+.dpf-msg.show{display:flex}
+
+/* -- Geometry Preview column -- */
+#geo-mount{display:flex;flex-direction:column;min-height:460px}
+#res-geo-wrap{margin:0;background:var(--sur);border-radius:0;border:none;overflow:hidden;flex:1;display:flex;flex-direction:column}
+#res-geo-cvs{flex:1;width:100%;display:block}
+
+/* -- Calculated Results column -- */
+.calc-eyebrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+.calc-badge{font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--dim);text-transform:uppercase}
+.valid-pill{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.valid-pill.ok{color:var(--green);background:rgba(5,150,105,.08)}
+.valid-pill.bad{color:#92400e;background:rgba(217,119,6,.1)}
+.res-primary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metric{background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:10px 11px 9px}
+.metric.hi{border-color:rgba(2,132,199,.3);background:rgba(2,132,199,.045)}
+.metric-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.045em;margin-bottom:4px;font-weight:600}
+.metric-val{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--blue);line-height:1.15;transition:color .15s}
+.metric-val .u{font-size:11.5px;font-weight:500;color:var(--muted);margin-left:2px}
+.metric-sub{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:4px}
+.metric-sym{font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.metric-desc{font-size:10.5px;color:var(--dim);text-align:right;line-height:1.3}
+@keyframes metricFlash{
+  0%{background:rgba(2,132,199,.22)}
+  100%{background:transparent}
+}
+.metric-val.changed{animation:metricFlash .7s ease-out}
+
+.ref-badge{font-size:10.5px;color:var(--blue-dk);background:rgba(2,132,199,.08);border:1px solid rgba(2,132,199,.2);padding:2px 8px;border-radius:20px;font-family:var(--mono);white-space:nowrap;margin-left:auto}
+
+.sec-toggle{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:11px;padding:7px;border:1px dashed var(--bdr2);border-radius:var(--radius-sm);background:transparent;color:var(--muted);font-size:12.5px;font-family:var(--sans);cursor:pointer;transition:all .15s}
+.sec-toggle:hover{color:var(--blue);border-color:var(--blue)}
+.sec-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.sec-toggle .ico{font-family:var(--mono);font-size:12px}
+#res-secondary{display:none;margin-top:11px}
+#res-secondary.open{display:block}
+.sgroup{margin-bottom:12px}
+.sgroup:last-child{margin-bottom:0}
+.sgroup-lbl{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.lvc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:6px 8px;transition:background .15s}
 .lvc.hi{border-color:rgba(2,132,199,.35);background:rgba(2,132,199,.04)}
-.lvl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.lvv{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--blue);margin-top:2px}
-.lvu{font-size:11px;color:var(--muted)}
+.lvl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.lvv{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue);margin-top:2px;transition:background .15s}
+.lvu{font-size:10px;color:var(--muted)}
+.lvv.p{color:var(--purple)}.lvv.g{color:var(--green)}.lvv.a{color:var(--amber)}
+.metric-val.p{color:var(--purple)}.metric-val.g{color:var(--green)}.metric-val.a{color:var(--amber)}
 
-/* Sim block */
-#simblk{flex:1;display:flex;flex-direction:column;min-height:420px}
-#simbar{padding:9px 18px;background:var(--sur);border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
-#simbar h3{font-size:15px;font-weight:600;color:var(--txt)}
-.fg{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--muted)}
-.fg input{width:68px;padding:5px 7px;background:var(--sur);border:1px solid var(--bdr);border-radius:5px;color:var(--txt);font-family:var(--mono);font-size:14px;outline:none}
-.fg input:focus{border-color:var(--blue)}
-.sbtns{display:flex;gap:7px;margin-left:auto}
-.sbtn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;transition:opacity .15s;font-family:inherit}
-.sbtn-s{background:var(--blue);color:#fff}.sbtn-f{background:var(--purple);color:#fff}
-.sbtn:hover{opacity:.85}
+
+
+/* -- Frequency Sweep section -- */
+.sweep-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.03);padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.sw-head{display:flex;flex-direction:column;gap:2px}
+.sweep-title{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--txt)}
+.sw-sub{font-size:12px;color:var(--muted)}
+
+.sw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.sw-field .dpf-top{margin-bottom:4px}
+.sw-field .dprow input{font-size:14px}
+
+.sw-summary{display:flex;flex-wrap:wrap;gap:18px;padding:10px 13px;background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius-sm)}
+.sw-sitem{display:flex;flex-direction:column;gap:1px;min-width:78px}
+.sw-slbl{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.sw-sval{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--txt)}
+
+.sw-warn{display:none;align-items:flex-start;gap:8px;background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.3);border-radius:var(--radius-sm);padding:8px 11px;font-size:12.5px;color:#92400e;line-height:1.5}
+.sw-warn.show{display:flex}
+.sw-warn ul{margin:2px 0 0 15px;padding:0}
+
+.sw-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sw-status{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.sw-status .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:background .2s}
+.sw-status.ready .dot{background:var(--dim)}
+.sw-status.running .dot{background:var(--amber);animation:swPulse 1s ease-in-out infinite}
+.sw-status.complete .dot{background:var(--green)}
+.sw-status.invalid .dot{background:var(--red)}
+@keyframes swPulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.sw-btns{display:flex;gap:8px}
+.sbtn{padding:10px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;transition:opacity .15s,transform .1s,background .15s;font-family:var(--sans);white-space:nowrap}
+.sbtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.sbtn-s{background:var(--blue);color:#fff;box-shadow:0 1px 3px rgba(2,132,199,.35)}
+.sbtn-s:hover:not(:disabled){opacity:.9}
+.sbtn-s:active:not(:disabled){transform:scale(.98)}
+.sbtn-s.is-running{background:var(--amber);box-shadow:0 1px 3px rgba(217,119,6,.35)}
+.sbtn-s.is-complete{background:var(--green);box-shadow:0 1px 3px rgba(5,150,105,.35)}
+.sbtn-s:disabled{background:var(--dim);box-shadow:none;cursor:not-allowed;opacity:.75}
+.sbtn-f{background:var(--sur);color:var(--purple);border:1px solid rgba(124,58,237,.35)}
+.sbtn-f:hover{opacity:.88}
+.sbtn-f:active{transform:scale(.98)}
+.sbtn-ic{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;flex-shrink:0}
+.sbtn-spin{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:swSpin .7s linear infinite;flex-shrink:0}
+@keyframes swSpin{to{transform:rotate(360deg)}}
+
+
+
+/* -- Simulation Results section -- */
+.results-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.03);display:flex;flex-direction:column;min-height:460px;overflow:hidden}
+#restabs{display:flex;align-items:center;border-bottom:1px solid var(--bdr);padding:0 10px;flex-shrink:0}
+.results-stale{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11.5px;color:#92400e;background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.25);padding:4px 10px;border-radius:20px;white-space:nowrap}
+.rtab{display:flex;align-items:center;gap:7px;padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.rtab .dotc{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.rtab.on{color:var(--txt);border-bottom-color:var(--blue)}
+.rtab.on .dotc{background:var(--blue)}
 
 /* Sim body */
-#simbdy{flex:1;position:relative;min-height:380px}
-#idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted)}
-#idle .ic{font-size:34px;opacity:.25}
+#simbdy{flex:1;position:relative;min-height:420px}
+#idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);padding:20px;text-align:center}
+#idle .ic{width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.55;margin-bottom:4px}
+#idle b{font-size:14.5px;color:var(--txt);font-weight:600}
+#idle p{font-size:13px;max-width:320px;line-height:1.6}
 
 /* Result panels */
 .rp{position:absolute;inset:0;display:none;flex-direction:column;background:var(--card);z-index:5}
 .rp.on{display:flex}
-.rphdr{padding:9px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:9px;flex-shrink:0;background:var(--sur)}
-.rptit{font-size:15px;font-weight:600;color:var(--txt)}
-.rpsub{font-size:13px;color:var(--muted);margin-left:4px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rpx{padding:3px 10px;background:rgba(15,23,42,.04);border:1px solid var(--bdr);border-radius:4px;cursor:pointer;font-size:13px;color:var(--muted)}
-.rpx:hover{color:var(--txt)}
+.rphdr{padding:10px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:9px;flex-shrink:0;background:var(--panel)}
+.rptit{font-size:14px;font-weight:600;color:var(--txt)}
+.rpsub{font-size:12.5px;color:var(--muted);margin-left:4px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
+.rpx{padding:4px 11px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius-sm);cursor:pointer;font-size:12.5px;color:var(--muted)}
+.rpx:hover{color:var(--txt);border-color:var(--bdr2)}
 
 /* S-param panel */
-#rp-sp .rpbdy{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px;flex:1;overflow-y:auto}
-.rcc{background:var(--sur);border:1px solid var(--bdr);border-radius:7px;padding:11px 13px}
-.rcc h4{font-size:13px;color:var(--muted);margin-bottom:7px;font-family:var(--mono)}
+#rp-sp .rpbdy{display:flex;flex-direction:column;gap:14px;padding:16px 18px;flex:1;overflow-y:auto}
+#rp-sp .rpbdy>*{flex-shrink:0} /* stacked result blocks keep their natural height; the panel scrolls instead of squashing them */
+.rcc{background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius);padding:12px 14px}
+.rcc h4{font-size:12.5px;color:var(--muted);margin-bottom:8px;font-family:var(--mono);font-weight:500}
 .chart-box{position:relative;height:190px;width:100%}
-.stats{grid-column:span 2;display:grid;gap:7px}
-.st{background:var(--card);border:1px solid var(--bdr);border-radius:6px;padding:7px 9px}
-.stl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stats{display:grid;gap:7px}
+.st{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:8px 10px}
+.stl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .stv{font-family:var(--mono);font-size:16px;color:var(--blue);margin-top:1px}
-.stu{font-size:11px;color:var(--muted)}
+.stu{font-size:10.5px;color:var(--muted)}
 .stv.p{color:var(--purple)}.stv.g{color:var(--green)}.stv.a{color:var(--amber)}.stv.r{color:var(--red)}
+
+/* -- S-Parameters: strong section header -- */
+.sp-head2{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px}
+.sp-head2 h3{font-size:15.5px;font-weight:600;color:var(--txt)}
+.sp-head2 .sp-tag{font-size:12px;color:var(--muted);margin-top:2px}
+.sp-status-pill{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;color:var(--green);background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2)}
+.sp-status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* -- Key result cards (primary) -- */
+.sp-key{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sp-kcard{background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:9px 10px 8px}
+.sp-kcard.hi{border-color:rgba(2,132,199,.3);background:rgba(2,132,199,.045)}
+.sp-klbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;font-weight:600}
+.sp-kval{font-family:var(--mono);font-size:16.5px;font-weight:600;color:var(--blue);line-height:1.15}
+.sp-kval .u{font-size:10.5px;font-weight:500;color:var(--muted);margin-left:1px}
+.sp-ksub{display:flex;align-items:baseline;justify-content:space-between;gap:5px;margin-top:3px}
+.sp-ksym{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.sp-kdesc{font-size:9.5px;color:var(--dim);text-align:right;line-height:1.25}
+.sp-kval.p{color:var(--purple)}.sp-kval.g{color:var(--green)}.sp-kval.a{color:var(--amber)}.sp-kval.r{color:var(--red)}
+
+/* -- chart mode sub-tabs -- */
+.sp-ctabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:3px;width:fit-content}
+.sp-ctab{padding:6px 13px;border-radius:5px;border:none;background:transparent;color:var(--muted);font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.sp-ctab:hover{color:var(--txt)}
+.sp-ctab.on{background:var(--sur);color:var(--blue);box-shadow:0 1px 2px rgba(15,23,42,.08)}
+.sp-ctab:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+
+/* -- active chart card -- */
+.sp-chartcard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--radius);overflow:hidden}
+.sp-chart-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid var(--bdr)}
+.sp-chart-hd h4{font-size:13px;font-weight:600;color:var(--txt)}
+.sp-legend{display:flex;gap:12px;flex-wrap:wrap}
+.sp-lg-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+.sp-lg-sw{width:13px;height:2.5px;border-radius:1px;flex-shrink:0}
+.sp-chart-bd{padding:10px 14px 14px}
+.sp-chart-box{position:relative;height:320px;width:100%}
+.sp-axis-note{font-size:11px;color:var(--dim);text-align:center;margin-top:4px}
+
+/* -- interpretation -- */
+.sp-interp{background:rgba(2,132,199,.04);border:1px solid rgba(2,132,199,.15);border-radius:var(--radius);padding:12px 14px}
+.sp-interp h4{font-size:12px;font-weight:600;color:var(--blue-dk);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.sp-interp p{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:6px}
+.sp-interp p:last-child{margin-bottom:0}
+
+/* -- data-quality note (flags an existing-calculation issue; does not alter it) -- */
+.sp-flag{display:flex;gap:8px;background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.22);border-radius:var(--radius-sm);padding:9px 11px;font-size:11.5px;color:#991b1b;line-height:1.55;margin-top:8px}
+
+/* -- more parameters (secondary) -- */
+
+
+
 
 /* Field panel */
 #rp-fd{flex-direction:column}
-#fdwrap{flex:1;background:#f8fafc;position:relative;overflow:hidden}
+.fd-body{display:flex;flex-direction:column;gap:12px;padding:16px 18px;flex:1;overflow-y:auto}
+.fd-body>*{flex-shrink:0}
+#fdwrap{flex:1 1 320px;min-height:260px;background:var(--panel);position:relative;overflow:hidden;border:1px solid var(--bdr);border-radius:var(--radius)}
 #fdcvs{display:block;width:100%;height:100%}
-#fdlegend{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);border:1px solid var(--bdr);border-radius:6px;padding:9px 12px;font-size:12px;font-family:var(--mono);color:var(--muted);box-shadow:0 2px 6px rgba(15,23,42,.08)}
+#fdlegend{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:9px 12px;font-size:11.5px;font-family:var(--mono);color:var(--muted);box-shadow:0 2px 6px rgba(15,23,42,.08)}
 .fll{display:flex;align-items:center;gap:6px;margin:3px 0}
-.flc{width:22px;height:2px;border-radius:1px}
-#fdsbar{padding:12px 22px;background:var(--sur);border-top:1px solid var(--bdr);display:flex;align-items:center;gap:14px;flex-shrink:0}
-#fdfreq{font-family:var(--mono);font-size:15px;color:var(--blue);min-width:88px}
+.flc{width:20px;height:2px;border-radius:1px}
+
+.fd-freqrow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.fd-freq-main{display:flex;align-items:baseline;gap:9px}
+.fd-freq-lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.fd-freq-val{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--blue)}
+.fd-presets{display:flex;gap:6px}
+.fd-preset-btn{padding:5px 11px;border-radius:20px;border:1px solid var(--bdr);background:var(--sur);color:var(--muted);font-size:11.5px;font-family:var(--mono);cursor:pointer;transition:all .15s}
+.fd-preset-btn:hover{border-color:var(--blue);color:var(--blue)}
+.fd-preset-btn:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+
+.fd-sliderrow{display:flex;align-items:center;gap:10px}
+.fd-slabel{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap}
 #fdrng{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--blue));cursor:pointer;outline:none}
 #fdrng::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
-#fdinfo{font-size:13px;color:var(--muted);font-family:var(--mono)}
+#fdrng:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
-/* Standalone single-experiment header */
-#exptitle{padding:0 16px;display:flex;align-items:center;gap:10px}
-#expnum{font-family:var(--mono);font-size:13px;color:var(--blue);background:rgba(2,132,199,.10);padding:3px 8px;border-radius:4px;font-weight:600;letter-spacing:.04em}
-#expname{font-size:15px;font-weight:600;color:var(--txt)}
+.fd-ctrlrow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.fd-playctrl{display:flex;align-items:center;gap:10px}
+.fd-animstate{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.fd-animstate .dot{width:6px;height:6px;border-radius:50%;background:var(--dim)}
+.fd-animstate.on .dot{background:var(--purple);animation:swPulse 1s ease-in-out infinite}
+.fd-speedctrl{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim)}
+.fd-speedctrl input{width:80px}
+
+.fd-colorscale{display:flex;flex-direction:column;gap:4px}
+.fd-cs-lbl{font-size:11.5px;font-weight:600;color:var(--txt)}
+.fd-cs-lbl .fd-cs-sub{font-weight:400;color:var(--dim);font-size:10.5px}
+.fd-cs-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(2,132,199,.08),rgba(2,132,199,.85))}
+.fd-cs-ticks{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-family:var(--mono)}
+
+/* Footer */
+#appfoot{flex-shrink:0;padding:9px 24px;border-top:1px solid var(--bdr);background:var(--sur);display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--dim)}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:1180px){
+  .workspace{grid-template-columns:1fr 1fr}
+  .workspace>.res-col{grid-column:span 2}
+  .sw-grid{grid-template-columns:1fr 1fr}
+  .sp-key{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:760px){
+  #topnav{overflow-x:auto}
+  .workspace{grid-template-columns:1fr}
+  .workspace>.res-col{grid-column:span 1}
+  #geo-mount{min-height:280px}
+  .res-primary{grid-template-columns:1fr 1fr}
+  .stats{grid-column:span 1}
+  #sp-stats>div{grid-template-columns:repeat(2,1fr) !important}
+  .rcc[style*="span 2"]{grid-column:span 1 !important}
+  .sw-grid{grid-template-columns:1fr}
+  .sw-footer{flex-direction:column;align-items:stretch}
+  .sw-btns{width:100%;flex-direction:column}
+  .sbtn{flex:1;justify-content:center}
+  #exptitle{display:none}
+  .sp-key{grid-template-columns:1fr}
+  .sp-chart-box{height:230px}
+  .sp-head2{flex-direction:column;align-items:flex-start}
+  #rp-sp .rpbdy{padding:12px}
+  .fd-body{padding:12px}
+  #fdwrap{min-height:220px}
+  .fd-ctrlrow{flex-direction:column;align-items:stretch}
+  .fd-speedctrl{justify-content:space-between}
+}
 </style>
 <body>
 
 <div id="topbar">
-  <div class="logo">μW</div>
-  <div id="exptitle"><span id="expname">Ring Resonator</span></div>
-  <div id="apibadge">● standalone</div>
+  <div class="brand">
+    <div class="logo">μW</div>
+    <div class="brand-txt"><b>Virtual Labs</b><span>Microwave Engineering</span></div>
+  </div>
+  <div id="exptitle"><span id="expname">Ring Resonator</span><span id="expsub">Bandpass · Gap-coupled</span></div>
+  <div id="apibadge"><span class="dot"></span>Virtual Lab</div>
+</div>
+
+<div id="topnav">
+  <div class="tnav">
+    <div class="tnav-item on" id="st-concept" onclick="switchTab('concept')"><span class="tnav-num">1</span>Concept</div>
+    <div class="tnav-item" id="st-formula" onclick="switchTab('formula')"><span class="tnav-num">2</span>Theory</div>
+    <div class="tnav-item" id="st-design" onclick="switchTab('design')"><span class="tnav-num">3</span>Design &amp; Simulation</div>
+  </div>
+  <div id="topnav-ref">
+    <div class="tnav-div"></div>
+    <div class="tnav-ref" id="st-why50" onclick="switchTab('why50')">Ω&nbsp; Why 50 Ω?</div>
+  </div>
 </div>
 
 <div id="shell">
-  <div id="sidebar">
-  <span class="sb-lbl">Modules</span>
-  <div class="sb-item" id="sb-ring" onclick="switchTab('concept')"><div class="sb-ic">○</div>Ring Resonator</div>
-  
-  <div class="sb-div"></div>
-  <span class="sb-lbl">Reference</span>
-  <div class="sb-item" id="st-why50" onclick="switchTab('why50')"><div class="sb-ic">Ω</div>Why 50 Ω?</div>
-</div>
 <div id="modwrap">
-  <div id="stabs">
-    <div class="stab on" id="st-concept" onclick="switchTab('concept')"><div class="snum">1</div>Concept</div>
-    <div class="stab" id="st-formula" onclick="switchTab('formula')"><div class="snum">2</div>Formulas</div>
-    <div class="stab" id="st-design" onclick="switchTab('design')"><div class="snum">3</div>Design &amp; Simulation</div>
-    
-  </div>
   <div id="subwrap">
 
     <!-- CONCEPT TAB -->
@@ -206,35 +480,116 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <!-- DESIGN & SIM TAB -->
     <div class="sp" id="tab-design">
       <div id="dsp" class="on">
+      <div class="dspwrap">
 
-        <!-- BLOCK 1: DESIGN PARAMETERS -->
-        <div id="dpblk">
-          <div id="dphdr" onclick="toggleDP()">
-            <span style="font-size:17px">⚙</span>
-            <h3>Design Parameters</h3>
-            <span class="hint">type values — results update live</span>
-            <span id="dpArr">▼</span>
-          </div>
-          <div id="dpbdy">
-            <div id="dpgrid"></div>
-            <div id="dplive"></div>
+        <!-- OBJECTIVE -->
+        <div class="objcard">
+          <div class="oic">◎</div>
+          <div>
+            <b>Objective</b>
+            <p>Investigate how ring radius, substrate permittivity and coupling gap affect resonant frequency, Q&#8209;factor and S&#8209;parameters.</p>
           </div>
         </div>
 
-        <!-- BLOCK 2: SIMULATION -->
-        <div id="simblk">
-          <div id="simbar">
-            <h3>Simulation</h3>
-            <div class="fg">f<sub>start</sub> <input type="number" id="fs1" value="0.5" step="0.1" min="0.01"> GHz</div>
-            <div class="fg">f<sub>stop</sub>  <input type="number" id="fs2" value="6"   step="0.1"> GHz</div>
-            <div class="fg">Points <input type="number" id="fpts" value="201" step="50" min="51" style="width:58px"></div>
-            <div class="sbtns">
-              <button class="sbtn sbtn-s" onclick="runSparam()">▶ S-Parameters</button>
-              <button class="sbtn sbtn-f" onclick="runField()">⚡ Field Distribution</button>
+        <!-- WORKSPACE: PARAMS | GEOMETRY | RESULTS -->
+        <div class="workspace">
+
+          <!-- LEFT: DESIGN PARAMETERS -->
+          <div class="wcard params-card">
+            <div class="wcard-hd" id="dphdr" onclick="toggleDP()">
+              <span style="font-size:15px">⚙</span>
+              <h3>Design Parameters</h3>
+              <span id="dpArr">▼</span>
+            </div>
+            <div id="dpbdy">
+              <div class="dp-warn" id="dp-warn"><span class="wic">⚠</span><div><b>Check geometry</b><ul id="dp-warn-list"></ul></div></div>
+              <div id="dpgrid"></div>
             </div>
           </div>
+
+          <!-- CENTER: GEOMETRY PREVIEW -->
+          <div class="wcard">
+            <div class="wcard-hd">
+              <span style="font-size:15px">◱</span>
+              <h3>Geometry Preview</h3>
+              <span class="sub">Top view · mm</span>
+            </div>
+            <div id="geo-mount"></div>
+          </div>
+
+          <!-- RIGHT: CALCULATED RESULTS -->
+          <div class="wcard res-col">
+            <div class="wcard-hd">
+              <span style="font-size:15px">Σ</span>
+              <h3>Calculated Results</h3>
+              <span class="ref-badge">50 Ω ref</span>
+            </div>
+            <div class="wcard-bd" id="dplive"></div>
+          </div>
+
+        </div><!-- workspace -->
+
+        <!-- FREQUENCY SWEEP -->
+        <div class="sweep-card">
+
+          <div class="sw-head">
+            <div class="sweep-title"><span style="font-size:15px">↝</span>Frequency Sweep</div>
+            <div class="sw-sub">Define the frequency range used for simulation</div>
+          </div>
+
+          <div class="sw-grid">
+            <div class="dpf sw-field" id="row-fs1">
+              <div class="dpf-top"><label for="fs1">Start Frequency</label><span class="dpf-sym">f<sub>start</sub></span></div>
+              <div class="dprow"><input type="number" id="fs1" value="0.5" step="0.1" min="0.01" oninput="onSweepInput()"><span class="dpu">GHz</span></div>
+              <div class="dpf-msg" id="msg-fs1"></div>
+            </div>
+            <div class="dpf sw-field" id="row-fs2">
+              <div class="dpf-top"><label for="fs2">Stop Frequency</label><span class="dpf-sym">f<sub>stop</sub></span></div>
+              <div class="dprow"><input type="number" id="fs2" value="6" step="0.1" min="0.02" oninput="onSweepInput()"><span class="dpu">GHz</span></div>
+              <div class="dpf-msg" id="msg-fs2"></div>
+            </div>
+            <div class="dpf sw-field" id="row-fpts">
+              <div class="dpf-top"><label for="fpts">Points</label><span class="dpf-sym">N</span></div>
+              <div class="dprow"><input type="number" id="fpts" value="201" step="50" min="51" oninput="onSweepInput()"></div>
+              <div class="dpf-msg" id="msg-fpts"></div>
+            </div>
+          </div>
+
+          <div class="sw-warn" id="sw-warn"><span>⚠</span><div><b>Fix sweep parameters before running</b><ul id="sw-warn-list"></ul></div></div>
+
+          <div class="sw-summary" id="sw-summary">
+            <div class="sw-sitem"><span class="sw-slbl">Range</span><span class="sw-sval" id="sw-range">0.50 → 6.00 GHz</span></div>
+            <div class="sw-sitem"><span class="sw-slbl">Points</span><span class="sw-sval" id="sw-points">201</span></div>
+            <div class="sw-sitem"><span class="sw-slbl">Resolution</span><span class="sw-sval" id="sw-res">27.5 MHz</span></div>
+            <div class="sw-sitem"><span class="sw-slbl">Type</span><span class="sw-sval">Linear</span></div>
+          </div>
+
+          <div class="sw-footer">
+            <div class="sw-status ready" id="sw-status"><span class="dot"></span><span id="sw-status-text">Ready</span></div>
+            <div class="sw-btns">
+              <button class="sbtn sbtn-s" id="btn-run" onclick="handleRunSimulation()">
+                <span class="sbtn-ic" id="run-ic">▶</span><span id="run-label">Run Simulation</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- SIMULATION RESULTS -->
+        <div class="results-card">
+          <div id="restabs">
+            <div class="rtab on" id="rt-sp" onclick="runResultTab('sp')"><span class="dotc"></span>S-Parameters</div>
+            <div class="rtab" id="rt-equiv" onclick="runResultTab('equiv')"><span class="dotc"></span>Equivalent Circuit</div>
+            <div class="rtab" id="rt-field" onclick="runResultTab('field')"><span class="dotc"></span>Field Distribution</div>
+            <div class="results-stale" id="results-stale-badge" style="display:none">⚠ Parameters changed — re-run to update</div>
+          </div>
           <div id="simbdy">
-            <div id="idle"><div class="ic">🔬</div><p style="font-size:15px">Set parameters above, then click a simulation button</p></div>
+            <div id="idle">
+              <div class="ic">🔬</div>
+              <b>Ready to simulate</b>
+              <p>Configure the ring parameters above and run a simulation to view S-parameters, field distribution and the equivalent circuit.</p>
+            </div>
 
             <!-- S-PARAM PANEL -->
             <div class="rp" id="rp-sp">
@@ -245,14 +600,58 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
                 <div class="rpx" onclick="closeRP('rp-sp')">✕ close</div>
               </div>
               <div class="rpbdy">
-                <div class="stats" id="sp-stats"></div>
-                <div class="rcc"><h4>Return Loss / |S₂₁| (dB)</h4><div class="chart-box"><canvas id="ch-s11"></canvas></div></div>
-                <div class="rcc"><h4>VSWR / Group Delay</h4><div class="chart-box"><canvas id="ch-vswr"></canvas></div></div>
-                <div class="rcc" style="grid-column:span 2"><h4>|V(z)| Standing Wave at f_center</h4><div class="chart-box"><canvas id="ch-sw"></canvas></div></div>
-                <div class="rcc" id="equivcircuit-wrap" style="grid-column:span 2">
+
+                <!-- Strong section header -->
+                <div class="sp-head2">
+                  <div>
+                    <h3>S-Parameters</h3>
+                    <div class="sp-tag">Frequency-domain response of the ring resonator</div>
+                  </div>
+                  <div class="sp-status-pill" id="sp-status-pill"><span class="dot"></span><span id="sp-status-text">Simulated</span></div>
+                </div>
+
+                <!-- Simulation context (dynamic, from the actual sweep just run) -->
+                <div class="sw-summary" id="sp-context"></div>
+
+                <!-- Key results — primary -->
+                <div class="sp-key" id="sp-key"></div>
+
+                <!-- Chart mode tabs -->
+                <div class="sp-ctabs" id="sp-ctabs">
+                  <button class="sp-ctab on" data-mode="mag" onclick="switchSPChart('mag')">Magnitude</button>
+                  <button class="sp-ctab" data-mode="vswr" onclick="switchSPChart('vswr')">VSWR</button>
+                  <button class="sp-ctab" data-mode="gd" onclick="switchSPChart('gd')">Group Delay</button>
+                </div>
+
+                <!-- Active chart -->
+                <div class="sp-chartcard">
+                  <div class="sp-chart-hd">
+                    <h4 id="sp-chart-title">S-Parameter Magnitude</h4>
+                    <div class="sp-legend" id="sp-legend"></div>
+                  </div>
+                  <div class="sp-chart-bd">
+                    <div class="sp-chart-box" id="box-mag"><canvas id="ch-s11"></canvas></div>
+                    <div class="sp-chart-box" id="box-vswr" style="display:none"><canvas id="ch-vswr"></canvas></div>
+                    <div class="sp-chart-box" id="box-gd" style="display:none"><canvas id="ch-gd"></canvas></div>
+                    <div class="sp-axis-note" id="sp-vswr-note" style="display:none"></div>
+                    <div class="sp-flag" id="sp-gd-flag" style="display:none"></div>
+                  </div>
+                </div>
+
+                <!-- Standing wave — kept as-is, existing data/behavior untouched -->
+                <div class="rcc"><h4>|V(z)| Standing Wave at f_center</h4><div class="chart-box" style="height:170px"><canvas id="ch-sw"></canvas></div></div>
+
+                <!-- Interpretation -->
+                <div class="sp-interp" id="sp-interp"></div>
+
+                <!-- (Qu / Qext / Leq / Ceq / Req / Cgap already live in the Calculated
+                     Results panel's "Show more parameters" — not repeated here.) -->
+
+                <!-- Equivalent circuit — untouched (own redesign is a later part) -->
+                <div class="rcc" id="equivcircuit-wrap">
                   <h4 id="equiv-title">Equivalent Circuit</h4>
-                  <svg id="equiv-svg" viewBox="0 0 700 140" style="width:100%;height:140px;background:#f8fafc;border:1px solid var(--bdr);border-radius:6px;display:block"></svg>
-                  <div id="equiv-vals" style="font-size:13px;color:var(--muted);font-family:var(--mono);margin-top:6px;line-height:1.8"></div>
+                  <svg id="equiv-svg" viewBox="0 0 700 140" style="width:100%;height:140px;background:var(--sur);border:1px solid var(--bdr);border-radius:6px;display:block"></svg>
+                  <div id="equiv-vals" style="font-size:12.5px;color:var(--muted);font-family:var(--mono);margin-top:6px;line-height:1.8"></div>
                 </div>
               </div>
             </div>
@@ -265,25 +664,71 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
                 <div class="rpsub" id="fd-sub"></div>
                 <div class="rpx" onclick="closeRP('rp-fd')">✕ close</div>
               </div>
-              <div id="fdwrap">
-                <canvas id="fdcvs"></canvas>
-                <div id="fdlegend">
-                  <div style="font-size:11px;color:var(--txt);margin-bottom:4px;letter-spacing:.06em">LEGEND</div>
-                  <div class="fll"><div class="flc" style="background:var(--blue)"></div>Ring / coupled amplitude</div>
-                  <div class="fll"><div class="flc" style="background:var(--purple)"></div>Standing wave envelope</div>
-                  <div class="fll"><div class="flc" style="background:var(--amber)"></div>Feed lines (P1/P2)</div>
-                  <div class="fll"><div class="flc" style="background:var(--red)"></div>Coupling gaps</div>
+              <div class="fd-body">
+
+                <div class="sp-head2">
+                  <div>
+                    <h3>Field Distribution</h3>
+                    <div class="sp-tag">Electromagnetic field around the ring resonator</div>
+                  </div>
+                  <div class="sp-status-pill" id="fd-status-pill"><span class="dot"></span><span>Simulated</span></div>
                 </div>
-              </div>
-              <div id="fdsbar">
-                <div id="fdfreq">2.40 GHz</div>
-                <input type="range" id="fdrng" min="0" max="100" value="50">
-                <div id="fdinfo">Slide to scan frequency</div>
+
+                <div class="fd-freqrow">
+                  <div class="fd-freq-main">
+                    <span class="fd-freq-lbl">Field Frequency</span>
+                    <span class="fd-freq-val" id="fdfreq">2.400 GHz</span>
+                  </div>
+                  <div class="fd-presets" id="fd-presets"></div>
+                </div>
+                <div class="fd-sliderrow">
+                  <span class="fd-slabel" id="fd-fmin">0.50</span>
+                  <input type="range" id="fdrng" min="0" max="100" value="50" aria-label="Field frequency scan">
+                  <span class="fd-slabel" id="fd-fmax">6.00</span>
+                </div>
+
+                <div id="fdwrap">
+                  <canvas id="fdcvs"></canvas>
+                  <div id="fdlegend">
+                    <div style="font-size:11px;color:var(--txt);margin-bottom:4px;letter-spacing:.06em">LEGEND</div>
+                    <div class="fll"><div class="flc" style="background:var(--blue)"></div>Ring / coupled amplitude</div>
+                    <div class="fll"><div class="flc" style="background:var(--purple)"></div>Standing wave envelope</div>
+                    <div class="fll"><div class="flc" style="background:var(--amber)"></div>Feed lines (P1/P2)</div>
+                    <div class="fll"><div class="flc" style="background:var(--red)"></div>Coupling gaps</div>
+                  </div>
+                </div>
+
+                <div class="fd-ctrlrow">
+                  <div class="fd-playctrl">
+                    <button class="sbtn sbtn-f" id="fd-playbtn" onclick="toggleFieldAnim()">▶ Play</button>
+                    <span class="fd-animstate" id="fd-animstate"><span class="dot"></span><span id="fd-animstate-txt">Paused</span></span>
+                  </div>
+                  <div class="fd-speedctrl">
+                    <span>Slow</span><input type="range" id="fd-speed" min="1" max="10" value="5" aria-label="Animation speed"><span>Fast</span>
+                  </div>
+                </div>
+
+                <div class="fd-colorscale">
+                  <div class="fd-cs-lbl">Field Magnitude <span class="fd-cs-sub">— normalized coupled-field amplitude</span></div>
+                  <div class="fd-cs-bar"></div>
+                  <div class="fd-cs-ticks"><span>Low</span><span id="fd-maxval">now: —</span><span>High</span></div>
+                </div>
+
+                <div class="sw-summary" id="fd-readouts"></div>
+
+                <div class="sp-interp" id="fd-observe">
+                  <h4>What to Observe</h4>
+                  <p>As you move the frequency near <b id="fd-obs-f1">f₁</b>, the ring's coupled field amplitude rises and the standing-wave envelope becomes more pronounced — the resonator is absorbing more energy from the feed line. Away from resonance the ring stays faint and the envelope flattens toward a circle.</p>
+                  <p>Watch how energy must cross the <b>coupling gap</b> between each feed line and the ring — this gap is what couples power in and out of the resonator.</p>
+                </div>
+
               </div>
             </div>
 
-          </div>
-        </div>
+          </div><!-- simbdy -->
+        </div><!-- results-card -->
+
+      </div><!-- dspwrap -->
       </div><!-- dsp -->
     </div><!-- tab-design -->
 
@@ -295,6 +740,11 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   </div><!-- subwrap -->
 </div><!-- modwrap -->
 </div><!-- shell -->
+
+<div id="appfoot">
+  <span>μW Virtual Labs — Microwave Engineering</span>
+  <span>Educational simulator · not for production design</span>
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════
@@ -312,6 +762,16 @@ function msZ0(W, h, er) {
 }
 
 function gv(id){ return parseFloat(document.getElementById(id).value)||0; }
+
+// Section-12 fix: gv(id)||def turns a legitimate 0 (e.g. tanδ=0, Lf=0, both
+// allowed by validateDesignParams()) into `def`, silently overriding a value
+// the user actually typed. This reads the same input but only falls back to
+// `def` when the value truly isn't a number (empty/garbage) — never for 0.
+function gvOr(id, def){
+  var el = document.getElementById(id);
+  var raw = el ? parseFloat(el.value) : NaN;
+  return Number.isFinite(raw) ? raw : def;
+}
 
 /* ═══════════════════════════════════════════════════════
    CHART SETUP
@@ -337,6 +797,61 @@ function cOpts(xt, yt){
       y:{title:{display:true,text:yt,color:'#64748b'}}
     }
   };
+}
+
+/* ═══════════════════════════════════════════════════════
+   S-PARAMETER CHART HELPERS (Part 5 — presentation only)
+   Small Chart.js plugins for reference lines / resonance markers,
+   plus a compact tick formatter. None of these touch the data
+   arrays produced by runSparam() — they only draw on top of them.
+═══════════════════════════════════════════════════════ */
+
+// vertical dashed marker(s) at given category-index positions (e.g. resonance frequencies)
+function spVLinePlugin(getMarks){
+  return { id:'spVLines', afterDatasetsDraw:function(chart){
+    var marks = getMarks(); if(!marks || !marks.length) return;
+    var xScale=chart.scales.x, yScale=chart.scales.y; if(!xScale||!yScale) return;
+    var ctx=chart.ctx;
+    marks.forEach(function(m){
+      if(m.index==null || m.index<0) return;
+      var x=xScale.getPixelForValue(m.index);
+      if(x<xScale.left-1 || x>xScale.right+1) return;
+      ctx.save();
+      ctx.strokeStyle=m.color; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(x,yScale.top); ctx.lineTo(x,yScale.bottom); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle=m.color; ctx.font='600 10px "JetBrains Mono",monospace'; ctx.textAlign='center';
+      ctx.fillText(m.label, Math.min(Math.max(x,xScale.left+22),xScale.right-22), yScale.top+11);
+      ctx.restore();
+    });
+  }};
+}
+// horizontal dashed reference line at a fixed y-value (e.g. 0 dB, VSWR=1)
+function spHLinePlugin(value,color,label){
+  return { id:'spHLine', afterDatasetsDraw:function(chart){
+    var yScale=chart.scales.y, xScale=chart.scales.x; if(!yScale||!xScale) return;
+    var y=yScale.getPixelForValue(value);
+    if(y<yScale.top-1 || y>yScale.bottom+1) return;
+    var ctx=chart.ctx;
+    ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=1; ctx.setLineDash([2,2]);
+    ctx.beginPath(); ctx.moveTo(xScale.left,y); ctx.lineTo(xScale.right,y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=color; ctx.font='9px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText(label, xScale.left+4, y-3);
+    ctx.restore();
+  }};
+}
+// finds the index in `arr` whose value is closest to `target`
+function spNearestIdx(arr,target){
+  var best=0,bd=Infinity;
+  for(var i=0;i<arr.length;i++){ var d=Math.abs(arr[i]-target); if(d<bd){bd=d;best=i;} }
+  return best;
+}
+// compact tick label for axes that may span very large ranges (display-only formatting)
+function spCompactTick(v){
+  var av=Math.abs(v);
+  if(av>=1e6) return (v/1e9).toFixed(v%1e9===0?0:2)+'e9';
+  return v.toLocaleString ? v.toLocaleString() : String(v);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -366,14 +881,22 @@ var MODS = {
 
   ,ring:{
     dpFields:[
-      {id:'dp-W',   lbl:'Strip width W',          val:3.0,  unit:'mm',  hint:'Sets Z0 start with 50 ohm'},
-      {id:'dp-h',   lbl:'Substrate height h',      val:1.6,  unit:'mm',  hint:'Standard PCB 1.6 mm'},
-      {id:'dp-er',  lbl:'Permittivity er',         val:4.4,  unit:'',    hint:'FR4 4.4 Rogers 3.55'},
-      {id:'dp-tand',lbl:'Loss tangent',            val:0.02, unit:'',    hint:'FR4 0.02 Rogers 0.0027'},
-      {id:'dp-Rr',  lbl:'Mean ring radius R',      val:10.91,unit:'mm',  hint:'change this f0 updates'},
-      {id:'dp-gr',  lbl:'Coupling gap g',          val:0.3,  unit:'mm',  hint:'Smaller stronger coupling'},
-      {id:'dp-Wf',  lbl:'Feed line width Wf',      val:3.0,  unit:'mm',  hint:'Usually 50 ohm'},
-      {id:'dp-Lf',  lbl:'Feed line length Lf',     val:10,   unit:'mm',  hint:'Port to gap distance'},
+      {id:'dp-Rr',  lbl:'Ring Radius',          sym:'R',   val:10.91,unit:'mm',  grp:'geo',
+        tip:'Mean radius measured to the center-line of the ring conductor.'},
+      {id:'dp-W',   lbl:'Strip Width',          sym:'W',   val:3.0,  unit:'mm',  grp:'geo',
+        tip:'Width of the microstrip conductor forming the ring.'},
+      {id:'dp-gr',  lbl:'Coupling Gap',         sym:'g',   val:0.3,  unit:'mm',  grp:'geo',
+        tip:'Gap between the feed line and the ring. Smaller gap generally indicates stronger coupling.'},
+      {id:'dp-Wf',  lbl:'Feed Line Width',      sym:'W<sub>f</sub>', val:3.0, unit:'mm', grp:'geo',
+        tip:'Width of the microstrip feed line used to target the reference impedance.'},
+      {id:'dp-Lf',  lbl:'Feed Line Length',     sym:'L<sub>f</sub>', val:10,  unit:'mm', grp:'geo',
+        tip:'Physical length of the feed section.'},
+      {id:'dp-er',  lbl:'Relative Permittivity',sym:'ε<sub>r</sub>', val:4.4, unit:'',   grp:'sub',
+        tip:'Relative dielectric permittivity of the substrate.'},
+      {id:'dp-h',   lbl:'Substrate Height',     sym:'h',   val:1.6,  unit:'mm',  grp:'sub',
+        tip:'Thickness of the dielectric substrate.'},
+      {id:'dp-tand',lbl:'Loss Tangent',         sym:'tan δ',val:0.02, unit:'',   grp:'sub',
+        tip:'Dielectric loss parameter used in the resonator loss calculation.'},
     ],
     concept:function(){ return ringConcept(); },
     formula:function(){ return ringFormula(); }
@@ -408,6 +931,7 @@ function switchTab(tab){
     document.getElementById('tab-'+t).classList.toggle('on', t===tab);
   });
   if(tab === 'design') calcLive();
+  else if(typeof pauseFieldAnim==='function') pauseFieldAnim(); // leaving Design & Simulation — don't animate an unseen canvas
 }
 
 function toggleDP(){
@@ -425,25 +949,30 @@ function renderMod(){
   document.getElementById('formula-body').innerHTML = mod.formula();
 
   var grid = document.getElementById('dpgrid');
-  grid.style.gridTemplateColumns = 'repeat(4,1fr)';
-  grid.innerHTML = mod.dpFields.map(function(f){
-    return '<div class="dpf">'
-      + '<label>'+f.lbl+'</label>'
-      + '<div class="dprow">'
+  function fieldHtml(f){
+    var symHtml = f.sym ? '<span class="dpf-sym">'+f.sym+'</span>' : '';
+    return '<div class="dpf" data-field="'+f.id+'">'
+      + '<div class="dpf-top"><label for="'+f.id+'">'+f.lbl+'</label>'+symHtml+'</div>'
+      + '<div class="dprow" id="row-'+f.id+'">'
       + '<input type="number" id="'+f.id+'" value="'+f.val+'" step="any" oninput="calcLive()">'
-      + '<span class="dpu">'+f.unit+'</span>'
+      + (f.unit ? '<span class="dpu">'+f.unit+'</span>' : '')
+      + '<button type="button" class="hicon" aria-label="'+f.lbl+': '+f.tip+'" data-tip="'+f.tip+'">i</button>'
       + '</div>'
-      + '<div class="dph">'+f.hint+'</div>'
+      + '<div class="dpf-msg" id="msg-'+f.id+'"></div>'
       + '</div>';
-  }).join('');
+  }
+  var geoFields = mod.dpFields.filter(function(f){return f.grp==='geo';});
+  var subFields = mod.dpFields.filter(function(f){return f.grp==='sub';});
+  grid.innerHTML =
+      '<div class="pgroup"><div class="pgroup-lbl">Geometry</div>' + geoFields.map(fieldHtml).join('') + '</div>'
+    + '<div class="pgroup"><div class="pgroup-lbl">Substrate</div>' + subFields.map(fieldHtml).join('') + '</div>';
 
-  // Geometry canvas
+  // Geometry canvas — mounted in the dedicated Geometry Preview panel
   if(!document.getElementById('res-geo-wrap')){
     var wrap = document.createElement('div');
     wrap.id = 'res-geo-wrap';
-    wrap.style.cssText = 'margin-top:14px;background:var(--sur);border-radius:7px;border:1px solid var(--bdr);overflow:hidden';
-    wrap.innerHTML = '<div style="padding:7px 13px;border-bottom:1px solid var(--bdr);background:var(--card);font-size:14px;font-weight:500;color:var(--txt)">Geometry — top view <span style="font-size:13px;color:var(--muted);font-weight:400;margin-left:6px">updates live</span></div><canvas id="res-geo-cvs" style="display:block;width:100%;height:230px"></canvas>';
-    document.getElementById('dpbdy').appendChild(wrap);
+    wrap.innerHTML = '<canvas id="res-geo-cvs"></canvas>';
+    document.getElementById('geo-mount').appendChild(wrap);
   }
 }
 
@@ -456,6 +985,66 @@ function getP(){
 }
 
 /* ═══════════════════════════════════════════════════════
+   DESIGN PARAMETER VALIDATION
+   (UI-only: flags obviously invalid geometry/material values —
+   does not alter any physics function or clamp any value)
+═══════════════════════════════════════════════════════ */
+var DP_RULES = {
+  'dp-Rr' :{allowZero:false, label:'Ring radius'},
+  'dp-W'  :{allowZero:false, label:'Strip width'},
+  'dp-gr' :{allowZero:false, label:'Coupling gap'},
+  'dp-Wf' :{allowZero:false, label:'Feed line width'},
+  'dp-Lf' :{allowZero:true,  label:'Feed line length'},
+  'dp-er' :{allowZero:false, label:'Relative permittivity'},
+  'dp-h'  :{allowZero:false, label:'Substrate height'},
+  'dp-tand':{allowZero:true, label:'Loss tangent'}
+};
+
+function validateDesignParams(){
+  var issues = [];
+  var raw = {};
+  Object.keys(DP_RULES).forEach(function(id){
+    var rule = DP_RULES[id];
+    var el = document.getElementById(id);
+    var str = el ? el.value.trim() : '';
+    var n = parseFloat(str);
+    raw[id] = n;
+    var bad = (str==='' || isNaN(n) || (rule.allowZero ? n<0 : n<=0));
+    var rowEl = document.getElementById('row-'+id);
+    var msgEl = document.getElementById('msg-'+id);
+    if(bad){
+      var msg = str===''
+        ? rule.label+' is required.'
+        : rule.label+' must be '+(rule.allowZero?'zero or greater.':'greater than 0.');
+      issues.push(msg);
+      if(rowEl) rowEl.classList.add('invalid');
+      if(msgEl){ msgEl.textContent='✕ '+msg; msgEl.classList.add('show'); }
+    } else {
+      if(rowEl) rowEl.classList.remove('invalid');
+      if(msgEl){ msgEl.textContent=''; msgEl.classList.remove('show'); }
+    }
+  });
+  // Cross-field geometry condition: inner conductor radius (R − W/2) must stay positive
+  if(raw['dp-Rr']>0 && raw['dp-W']>0 && raw['dp-Rr'] <= raw['dp-W']/2){
+    issues.push('Ring radius must be greater than half the strip width.');
+    var rR=document.getElementById('row-dp-Rr'), rW=document.getElementById('row-dp-W');
+    if(rR) rR.classList.add('invalid');
+    if(rW) rW.classList.add('invalid');
+  }
+  var banner=document.getElementById('dp-warn'), list=document.getElementById('dp-warn-list');
+  if(banner && list){
+    if(issues.length){
+      list.innerHTML = issues.map(function(m){return '<li>'+m+'</li>';}).join('');
+      banner.classList.add('show');
+    } else {
+      list.innerHTML='';
+      banner.classList.remove('show');
+    }
+  }
+  return issues.length===0;
+}
+
+/* ═══════════════════════════════════════════════════════
    LIVE CARDS
 ═══════════════════════════════════════════════════════ */
 
@@ -465,30 +1054,113 @@ function liveCard(lbl, val, unit, hi, col){
   return '<div class="'+cls+'"><div class="lvl">'+lbl+'</div><div class="'+vcls+'">'+val+'</div><div class="lvu">'+unit+'</div></div>';
 }
 
+function metricCard(lbl, val, unit, hi, col, sym, desc, changed){
+  var cls = 'metric' + (hi ? ' hi' : '');
+  var vcls = 'metric-val' + (col ? ' '+col : '') + (changed ? ' changed' : '');
+  return '<div class="'+cls+'">'
+    + '<div class="metric-lbl">'+lbl+'</div>'
+    + '<div class="'+vcls+'">'+val+'<span class="u">'+(unit||'')+'</span></div>'
+    + '<div class="metric-sub"><span class="metric-sym">'+(sym||'')+'</span><span class="metric-desc">'+(desc||'')+'</span></div>'
+    + '</div>';
+}
+
+var secOpen = false;
+function toggleSecondary(){
+  secOpen = !secOpen;
+  var el = document.getElementById('res-secondary');
+  var btn = document.getElementById('secToggle');
+  if(el) el.classList.toggle('open', secOpen);
+  if(btn) btn.classList.toggle('open', secOpen);
+  if(btn){
+    btn.querySelector('.lbl').textContent = secOpen ? 'Hide additional parameters' : 'Show more parameters';
+    btn.querySelector('.ico').textContent = secOpen ? '\u2212' : '+';
+  }
+}
+
+// remembers the last-rendered primary values so we know which ones
+// actually changed and deserve the brief "changed" highlight
+var lastPrimary = {};
+
+// Section-19/35 fix: once a simulation has actually run, editing any design
+// parameter afterward must not leave the old S-parameter/field results
+// looking current. This never touches the results themselves — it only
+// shows/hides a small badge telling the student to re-run.
+var hasRunOnce = false;
+function markResultsFresh(){
+  hasRunOnce = true;
+  var b = document.getElementById('results-stale-badge');
+  if(b) b.style.display = 'none';
+}
+function markResultsStale(){
+  if(!hasRunOnce) return; // nothing has been simulated yet — nothing to go stale
+  var b = document.getElementById('results-stale-badge');
+  if(b) b.style.display = 'flex';
+}
+
 function calcLive(){
   var p = getP(); if(!p) return;
+  var isValid = validateDesignParams();
+  markResultsStale();
   var QL=1/(1/p.Qu+2/p.Qe);
-  var cols = 4;
-  var items = [
-    {l:'f\u2081 (fundamental)', v:p.f0.toFixed(4), u:'GHz', hi:true, col:'a'},
-    {l:'f\u2082 (2nd harmonic)', v:p.f2.toFixed(3), u:'GHz', col:'p'},
-    {l:'Z\u2080 (ring line)', v:p.Z0.toFixed(2), u:'\u03a9', hi:true},
-    {l:'\u03b5_r,eff', v:p.eref.toFixed(3), col:'p'},
-    {l:'Mean radius R', v:p.R.toFixed(3), u:'mm'},
-    {l:'Circumference', v:p.circ.toFixed(2), u:'mm'},
-    {l:'C_gap', v:p.Cgap.toFixed(2), u:'fF'},
-    {l:'Q_u (unloaded)', v:p.Qu.toFixed(0), col:'g'},
-    {l:'Q_ext (gap)', v:p.Qe.toFixed(0), col:'p'},
-    {l:'Q_L (loaded)', v:QL.toFixed(1), col:'g'},
-    {l:'BW \u22123dB', v:p.BW.toFixed(2), u:'MHz'},
-    {l:'L_eq', v:p.Leq.toFixed(3), u:'nH'}
-  ];
-  drawRingGeo(p);
+  var Req = p.Z0/p.Qu; // same expression already used in runSparam()
 
-  document.getElementById('dplive').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
-  document.getElementById('dplive').innerHTML = items.map(function(it){
-    return liveCard(it.l, it.v, it.u||'', it.hi||false, it.col||'');
-  }).join('');
+  // Primary — the four values a student reads first
+  var primary = [
+    {k:'f0', l:'Resonant Frequency', sym:'f\u2081', desc:'First ring resonance', v:p.f0.toFixed(4), u:'GHz', hi:true, col:'a'},
+    {k:'Z0', l:'Characteristic Impedance', sym:'Z\u2080', desc:'Microstrip reference impedance', v:p.Z0.toFixed(2), u:'\u03a9', hi:true},
+    {k:'QL', l:'Loaded Q', sym:'Q\u1D38', desc:'Including coupling and loss', v:QL.toFixed(1), u:'', hi:true, col:'g'},
+    {k:'BW', l:'Bandwidth \u22123dB', sym:'BW', desc:'Around resonance', v:p.BW.toFixed(2), u:'MHz', hi:true, col:'p'}
+  ];
+
+  // Secondary — grouped, available on demand, nothing deleted
+  var secGroups = [
+    {g:'Resonance', items:[
+      {l:'f\u2082 (2nd harmonic)', v:p.f2.toFixed(3), u:'GHz', col:'p'},
+      {l:'f\u2083 (3rd harmonic)', v:p.f3.toFixed(3), u:'GHz', col:'p'},
+      {l:'\u03b5_r,eff', v:p.eref.toFixed(3), col:'p'}
+    ]},
+    {g:'Quality / Loss', items:[
+      {l:'Q_u (unloaded)', v:p.Qu.toFixed(0), col:'g'},
+      {l:'Q_ext (gap)', v:p.Qe.toFixed(0), col:'p'}
+    ]},
+    {g:'Equivalent Circuit', items:[
+      {l:'L_eq', v:p.Leq.toFixed(3), u:'nH'},
+      {l:'C_eq', v:p.Ceq.toFixed(1), u:'fF'},
+      {l:'R_eq', v:Req.toFixed(4), u:'\u03a9'}
+    ]},
+    {g:'Coupling / Geometry', items:[
+      {l:'C_gap', v:p.Cgap.toFixed(2), u:'fF'},
+      {l:'Mean radius R', v:p.R.toFixed(3), u:'mm'},
+      {l:'Circumference', v:p.circ.toFixed(2), u:'mm'},
+      {l:'Z_feed', v:p.Zfeed.toFixed(2), u:'\u03a9'}
+    ]}
+  ];
+
+  // drawRingGeo() is untouched, but with an out-of-range geometry (e.g. R <= W/2)
+  // it can throw (canvas API rejects a negative radius) — caught here only so the
+  // Calculated Results panel and the validation warning above still render.
+  try{ drawRingGeo(p); }catch(e){ /* geometry preview skipped for this invalid combination */ }
+
+  var html = '<div class="calc-eyebrow"><span class="calc-badge">Analytical / design estimate</span>'
+    + '<span class="valid-pill '+(isValid?'ok':'bad')+'">'+(isValid?'\u2713 Valid':'\u26a0 Check parameters')+'</span></div>';
+
+  html += '<div class="res-primary">' + primary.map(function(it){
+    var changed = lastPrimary[it.k] !== undefined && lastPrimary[it.k] !== it.v;
+    return metricCard(it.l, it.v, it.u||'', it.hi||false, it.col||'', it.sym, it.desc, changed);
+  }).join('') + '</div>';
+  primary.forEach(function(it){ lastPrimary[it.k] = it.v; });
+
+  html += '<button class="sec-toggle'+(secOpen?' open':'')+'" id="secToggle" onclick="toggleSecondary()">'
+    + '<span class="ico">'+(secOpen?'\u2212':'+')+'</span>'
+    + '<span class="lbl">'+(secOpen?'Hide additional parameters':'Show more parameters')+'</span></button>';
+
+  html += '<div id="res-secondary"'+(secOpen?' class="open"':'')+'>' + secGroups.map(function(grp){
+    return '<div class="sgroup"><div class="sgroup-lbl">'+grp.g+'</div><div class="sgrid">'
+      + grp.items.map(function(it){ return liveCard(it.l, it.v, it.u||'', false, it.col||''); }).join('')
+      + '</div></div>';
+  }).join('') + '</div>';
+
+  document.getElementById('dplive').innerHTML = html;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -500,10 +1172,53 @@ function statCard(lbl,val,unit,col){
   return '<div class="st"><div class="stl">'+lbl+'</div><div class="'+vc+'">'+val+'</div><div class="stu">'+unit+'</div></div>';
 }
 
+function spKeyCard(lbl,val,unit,sym,desc,hi,col){
+  var vcls='sp-kval'+(col?' '+col:'');
+  return '<div class="sp-kcard'+(hi?' hi':'')+'">'
+    + '<div class="sp-klbl">'+lbl+'</div>'
+    + '<div class="'+vcls+'">'+val+'<span class="u">'+(unit||'')+'</span></div>'
+    + '<div class="sp-ksub"><span class="sp-ksym">'+(sym||'')+'</span><span class="sp-kdesc">'+(desc||'')+'</span></div>'
+    + '</div>';
+}
+
+var spGDFlagged=false;  // set by runSparam() if the existing GD calculation looks unrealistic
+var spVSWRClipped=false; // set by runSparam() if VSWR exceeds the display axis cap somewhere in the sweep
+
+function renderSPLegend(mode){
+  var el=document.getElementById('sp-legend'); if(!el) return;
+  var items = mode==='vswr' ? [{c:'#059669',l:'VSWR'}]
+            : mode==='gd'   ? [{c:'#7c3aed',l:'Group delay \u03c4_g'}]
+            : [{c:'#0284c7',l:'|S21|'},{c:'#dc2626',l:'|S11|'}];
+  el.innerHTML = items.map(function(it){
+    return '<div class="sp-lg-item"><span class="sp-lg-sw" style="background:'+it.c+'"></span>'+it.l+'</div>';
+  }).join('');
+}
+
+function switchSPChart(mode){
+  var titles={mag:'S-Parameter Magnitude',vswr:'VSWR',gd:'Group Delay'};
+  document.querySelectorAll('.sp-ctab').forEach(function(t){t.classList.toggle('on', t.dataset.mode===mode);});
+  ['mag','vswr','gd'].forEach(function(m){
+    var box=document.getElementById('box-'+m);
+    if(box) box.style.display = (m===mode)?'':'none';
+  });
+  var t=document.getElementById('sp-chart-title'); if(t) t.textContent=titles[mode]||'';
+  renderSPLegend(mode);
+  var flag=document.getElementById('sp-gd-flag');
+  if(flag) flag.style.display = (mode==='gd' && spGDFlagged) ? 'flex' : 'none';
+  var note=document.getElementById('sp-vswr-note');
+  if(note){
+    note.style.display = (mode==='vswr' && spVSWRClipped) ? 'block' : 'none';
+    if(mode==='vswr' && spVSWRClipped) note.textContent = 'Y-axis capped at VSWR = 20 for readability — this resonator is undercoupled, so VSWR rises well beyond that away from resonance. Hover the curve for exact values.';
+  }
+  var idMap={mag:'ch-s11',vswr:'ch-vswr',gd:'ch-gd'};
+  var ch=CH[idMap[mode]];
+  if(ch) ch.resize();
+}
+
 function runSparam(){
   var p = getP(); if(!p) return;
-  fdFmin = gv('fs1')||0.5; fdFmax = gv('fs2')||6;
-  var npts = Math.max(51,gv('fpts')||201);
+  fdFmin = gvOr('fs1',0.5); fdFmax = gvOr('fs2',6);
+  var npts = Math.max(51,gvOr('fpts',201));
   var freqs = Array.from({length:npts},function(_,k){return fdFmin+k*(fdFmax-fdFmin)/(npts-1);});
 
   var Qu=p.Qu, Qe=p.Qe, QL=p.QL;
@@ -518,48 +1233,217 @@ function runSparam(){
   });
   var IL=20*Math.log10(Math.max(QL/Qe,1e-12));
   var Leq=p.Leq, Ceq=p.Ceq, Req=p.Z0/Qu;
-  document.getElementById('sp-sub').textContent='f1='+p.f0.toFixed(4)+'GHz | f2='+p.f2.toFixed(3)+'GHz | R='+p.R.toFixed(2)+'mm | g='+p.g+'mm | Qu='+Qu.toFixed(0)+' | Qext='+Qe.toFixed(0)+' | QL='+QL.toFixed(1)+' | BW='+p.BW.toFixed(1)+'MHz';
-  var st='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">';
-  st+=statCard('f₁',p.f0.toFixed(4),'GHz','a')+statCard('Q_u',Qu.toFixed(0),'','g')+statCard('Q_L',QL.toFixed(1),'','g')+statCard('BW -3dB',p.BW.toFixed(1),'MHz','')+statCard('Ins.loss',IL.toFixed(2),'dB','r');
-  st+=statCard('f₂',p.f2.toFixed(3),'GHz','p')+statCard('C_gap',p.Cgap.toFixed(2),'fF','p')+statCard('L_eq',Leq.toFixed(3),'nH','')+statCard('C_eq',Ceq.toFixed(1),'fF','')+statCard('R_eq',Req.toFixed(4),'Ω','');
-  st+='</div>';
-  document.getElementById('sp-stats').innerHTML=st;
-  var cl=cOpts('Frequency (GHz)','dB');
+
+  // VSWR — standard textbook transform of the S11 magnitude already computed
+  // above (VSWR = (1+|Γ|)/(1-|Γ|), Γ = 10^(S11dB/20)). Not a new simulation
+  // model: it reuses the existing S11 array and adds no new physics.
+  var VSWR = S11.map(function(s11dB){
+    var gamma = Math.min(0.999999, Math.pow(10, s11dB/20));
+    return (1+gamma)/(1-gamma);
+  });
+
+  // Data-quality check (display-only): flag, but do not alter, the existing
+  // group-delay calculation if its magnitude is far outside anything physically
+  // sensible for this resonator (see implementation notes for details).
+  var gdMaxAbs = GD.reduce(function(m,v){ return isFinite(v)?Math.max(m,Math.abs(v)):m; },0);
+  spGDFlagged = gdMaxAbs > 1000; // realistic τ_g for this class of resonator is O(1-100) ns
+
+  document.getElementById('sp-sub').textContent = fdFmin.toFixed(2)+'\u2013'+fdFmax.toFixed(2)+' GHz';
+
+  // ---- Strong header: status + context strip (dynamic, from this sweep) ----
+  var resCount = (fdFmin<=p.f0 && p.f0<=fdFmax ? 1:0) + (fdFmin<=p.f2 && p.f2<=fdFmax ? 1:0);
+  document.getElementById('sp-context').innerHTML =
+      '<div class="sw-sitem"><span class="sw-slbl">Sweep Range</span><span class="sw-sval">'+fdFmin.toFixed(2)+' \u2192 '+fdFmax.toFixed(2)+' GHz</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Points</span><span class="sw-sval">'+npts+'</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Resonances</span><span class="sw-sval">'+resCount+' detected</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Ring Radius</span><span class="sw-sval">'+p.R.toFixed(2)+' mm</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Coupling Gap</span><span class="sw-sval">'+p.g.toFixed(2)+' mm</span></div>';
+
+  // ---- Key results — primary ----
+  // QL and BW are already shown in the Calculated Results panel above (same
+  // p.QL/p.BW values — simulation doesn't recompute them), so only the values
+  // that are unique to this simulation run are shown here.
+  document.getElementById('sp-key').innerHTML =
+      spKeyCard('f\u2081',p.f0.toFixed(4),'GHz','','First resonance',true,'a')
+    + spKeyCard('f\u2082',p.f2.toFixed(3),'GHz','','Second resonance',true,'p')
+    + spKeyCard('S\u2082\u2081',IL.toFixed(2),'dB','','At resonance',true,'r');
+
+  // Qu, Qext, Leq, Ceq, Req, Cgap are intentionally not repeated here — they're
+  // already available in the Calculated Results panel's "Show more parameters".
+
+  // ---- Interpretation (templated from the values already computed above) ----
+  document.getElementById('sp-interp').innerHTML =
+      '<h4>What this means</h4>'
+    + '<p>A resonance occurs where the resonator exhibits a strong frequency-selective response. '
+    + 'The first resonance is at approximately <b>'+p.f0.toFixed(4)+' GHz</b>'
+    + (resCount>1 ? ', with a second resonance near <b>'+p.f2.toFixed(3)+' GHz</b>.' : '.')
+    + '</p>'
+    + '<p>The loaded Q-factor (<b>Q\u1D38 = '+QL.toFixed(1)+'</b>) describes the sharpness of the resonance while accounting '
+    + 'for coupling and loss, giving a \u22123&nbsp;dB bandwidth of about <b>'+p.BW.toFixed(1)+' MHz</b>. '
+    + 'Near resonance, |S\u2082\u2081| rises to its maximum (\u2248 <b>'+IL.toFixed(1)+' dB</b>) while |S\u2081\u2081| dips, showing the ring absorbing '
+    + 'power from the feed line into the resonant mode.</p>';
+
+  // ---- Main magnitude chart (S11/S21) — same arrays as before ----
+  var f0Idx = spNearestIdx(freqs, p.f0);
+  var f2Idx = (fdFmin<=p.f2 && p.f2<=fdFmax) ? spNearestIdx(freqs, p.f2) : -1;
+  var cl=cOpts('Frequency (GHz)','Magnitude (dB)');
   cl.scales.y.suggestedMin=-45; cl.scales.y.suggestedMax=5;
+  cl.plugins.legend.display=false; // legend now shown via the compact .sp-legend header instead
+  cl.interaction={mode:'index',intersect:false};
+  cl.plugins.tooltip={
+    callbacks:{
+      title:function(items){ return items.length ? 'Frequency  '+freqs[items[0].dataIndex].toFixed(3)+' GHz' : ''; },
+      label:function(item){ return (item.dataset.label||'')+'  '+item.parsed.y.toFixed(2)+' dB'; }
+    }
+  };
   mkC('ch-s11',{type:'line',data:{labels:freqs.map(function(v){return v.toFixed(3);}),datasets:[
-    {label:'|S21| dB',data:S21,borderColor:'#0284c7',borderWidth:2,pointRadius:0,tension:.2,fill:true,backgroundColor:'rgba(2,132,199,.08)'},
-    {label:'|S11| dB',data:S11,borderColor:'#dc2626',borderWidth:1.5,pointRadius:0,tension:.2,borderDash:[4,3]}
-  ]},options:cl});
+    {label:'|S21|',data:S21,borderColor:'#0284c7',borderWidth:2,pointRadius:0,tension:.2,fill:true,backgroundColor:'rgba(2,132,199,.08)'},
+    {label:'|S11|',data:S11,borderColor:'#dc2626',borderWidth:1.5,pointRadius:0,tension:.2,borderDash:[4,3]}
+  ]},options:cl,plugins:[
+    spHLinePlugin(0,'rgba(100,116,139,.55)','0 dB'),
+    spVLinePlugin(function(){
+      var m=[{index:f0Idx,label:'f\u2081',color:'#b45309'}];
+      if(f2Idx>=0) m.push({index:f2Idx,label:'f\u2082',color:'#7c3aed'});
+      return m;
+    })
+  ]});
+
+  // ---- VSWR chart (new canvas; existing S11 data reused, see note above) ----
+  var vo=cOpts('Frequency (GHz)','VSWR');
+  // Hard axis cap (not just "suggested") — VSWR for an undercoupled resonator
+  // can mathematically run into the thousands away from resonance (Γ→1), which
+  // would otherwise squash the interesting behavior near f1 into an unreadable
+  // sliver. The full VSWR array is still passed to the chart/tooltips unchanged;
+  // this only limits what portion of it is *displayed* on the y-axis.
+  vo.scales.y.min=1; vo.scales.y.max=20;
+  spVSWRClipped = VSWR.some(function(v){ return isFinite(v) && v>20; });
+  vo.plugins.legend.display=false;
+  vo.interaction={mode:'index',intersect:false};
+  vo.plugins.tooltip={callbacks:{
+    title:function(items){ return items.length ? freqs[items[0].dataIndex].toFixed(3)+' GHz' : ''; },
+    label:function(item){ return 'VSWR  '+item.parsed.y.toFixed(2); }
+  }};
   mkC('ch-vswr',{type:'line',data:{labels:freqs.map(function(v){return v.toFixed(3);}),datasets:[
-    {label:'Group delay τ_g (ns)',data:GD,borderColor:'#7c3aed',borderWidth:2,pointRadius:0,tension:.2,fill:true,backgroundColor:'rgba(124,58,237,.08)'}
-  ]},options:cOpts('Frequency (GHz)','τ_g (ns)')});
+    {label:'VSWR',data:VSWR,borderColor:'#059669',borderWidth:2,pointRadius:0,tension:.2,fill:true,backgroundColor:'rgba(5,150,105,.08)'}
+  ]},options:vo,plugins:[
+    spHLinePlugin(1,'rgba(5,150,105,.9)','VSWR = 1 (ideal)'),
+    spVLinePlugin(function(){ return [{index:f0Idx,label:'f\u2081',color:'#b45309'}]; })
+  ]});
+
+  // ---- Group Delay chart (new canvas; GD array itself is 100% unchanged) ----
+  var go=cOpts('Frequency (GHz)','Group Delay (ns)');
+  go.plugins.legend.display=false;
+  go.scales.y.ticks={callback:spCompactTick};
+  go.interaction={mode:'index',intersect:false};
+  go.plugins.tooltip={callbacks:{
+    title:function(items){ return items.length ? freqs[items[0].dataIndex].toFixed(3)+' GHz' : ''; },
+    label:function(item){ return '\u03c4_g  '+item.parsed.y.toExponential(3)+' ns'; }
+  }};
+  mkC('ch-gd',{type:'line',data:{labels:freqs.map(function(v){return v.toFixed(3);}),datasets:[
+    {label:'Group delay \u03c4_g (ns)',data:GD,borderColor:'#7c3aed',borderWidth:2,pointRadius:0,tension:.2,fill:true,backgroundColor:'rgba(124,58,237,.08)'}
+  ]},options:go,plugins:[ spVLinePlugin(function(){ return [{index:f0Idx,label:'f\u2081',color:'#b45309'}]; }) ]});
+  document.getElementById('sp-gd-flag').innerHTML = spGDFlagged
+    ? '<span>\u26a0</span><div>The existing group-delay calculation is producing magnitudes (~10\u2079 ns) far outside what is physical for this resonator. '
+      + 'Values are plotted exactly as computed — see implementation notes for a likely unit-scaling cause. Not modified in this UI pass.</div>'
+    : '';
+
   var zArr=Array.from({length:60},function(_,k){return (k/59*p.circ).toFixed(1);});
   mkC('ch-sw',{type:'line',data:{labels:zArr,datasets:[
     {label:'|V| along ring (n=1)',data:zArr.map(function(_,k){return Math.abs(Math.sin(Math.PI*k/59));}),borderColor:'#059669',borderWidth:2,pointRadius:0,tension:.3,fill:true,backgroundColor:'rgba(5,150,105,.08)'}
   ]},options:cOpts('Arc (mm)','|V| norm.')});
+
   drawEquivCircuit({Req:Req,Leq:Leq,Ceq:Ceq,Cgap:p.Cgap,f0:p.f0,Qu:Qu,QL:QL});
   showRP('rp-sp');
+  // charts above were created while the panel could still be hidden (display:none
+  // has zero size); now that it's visible, force a resize so Chart.js picks up
+  // the real container dimensions instead of staying at 0×0.
+  switchSPChart('mag');
+  if(CH['ch-sw']) CH['ch-sw'].resize();
 }
 
 function runField(){
   var p = getP(); if(!p) return;
-  fdFmin = gv('fs1')||0.5; fdFmax = gv('fs2')||6;
+  fdFmin = gvOr('fs1',0.5); fdFmax = gvOr('fs2',6);
   fdParams = p;
+  pauseFieldAnim(); // each new run starts paused — never auto-plays
   document.getElementById('fdrng').value = 50;
+  document.getElementById('fd-fmin').textContent = fdFmin.toFixed(2);
+  document.getElementById('fd-fmax').textContent = fdFmax.toFixed(2);
   var fmid = fdFmin + (fdFmax-fdFmin)*0.5;
-  document.getElementById('fd-sub').textContent = fdFmin.toFixed(2)+'\u2013'+fdFmax.toFixed(2)+' GHz | slide to scan';
+  document.getElementById('fd-sub').textContent = fdFmin.toFixed(2)+'\u2013'+fdFmax.toFixed(2)+' GHz';
+  buildFieldPresets(p);
   showRP('rp-fd');
   drawField(fmid, p);
 }
 
-document.getElementById('fdrng').addEventListener('input', function(){
-  var p = getP(); if(!p) return;
-  var f = fdFmin + (fdFmax-fdFmin)*(this.value/100);
-  drawField(f, p);
-});
+// shared by the slider, the resonance presets and the play loop — all three
+// just move the same slider and reuse the same unmodified drawField()
+function fdScanToSliderValue(v){
+  var rng=document.getElementById('fdrng');
+  v=Math.max(0,Math.min(100,v));
+  rng.value=v;
+  var p=getP(); if(!p) return;
+  drawField(fdFmin+(fdFmax-fdFmin)*(v/100), p);
+}
+
+document.getElementById('fdrng').addEventListener('pointerdown', function(){ if(fdPlaying) pauseFieldAnim(); });
+document.getElementById('fdrng').addEventListener('input', function(){ fdScanToSliderValue(parseFloat(this.value)); });
+
+// Resonance shortcuts — only for resonances that actually fall inside the
+// current sweep range, using the real detected f0/f2 values.
+function buildFieldPresets(p){
+  var el=document.getElementById('fd-presets'); if(!el) return;
+  var items=[];
+  if(p.f0>=fdFmin && p.f0<=fdFmax) items.push({lbl:'f\u2081',v:p.f0,dp:4});
+  if(p.f2>=fdFmin && p.f2<=fdFmax) items.push({lbl:'f\u2082',v:p.f2,dp:3});
+  el.innerHTML = items.map(function(it){
+    var pct=(it.v-fdFmin)/(fdFmax-fdFmin)*100;
+    return '<button type="button" class="fd-preset-btn" onclick="fdScanToSliderValue('+pct+')">'+it.lbl+'  '+it.v.toFixed(it.dp)+' GHz</button>';
+  }).join('');
+  var obs=document.getElementById('fd-obs-f1');
+  if(obs) obs.textContent='f\u2081 ('+p.f0.toFixed(4)+' GHz)';
+}
+
+/* Animation (new in Part 6). No animation loop existed before — the field
+   view was slider-scan only. This is a physics-inert wrapper: it moves the
+   SAME slider over time and calls the SAME drawField(). No new field data,
+   frequency or calculation; "speed" only changes how fast the slider steps. */
+var fdPlaying=false, fdPlayTimer=null;
+function toggleFieldAnim(){ fdPlaying ? pauseFieldAnim() : playFieldAnim(); }
+function playFieldAnim(){
+  if(fdPlaying) return;
+  fdPlaying=true;
+  document.getElementById('fd-playbtn').innerHTML='\u23F8 Pause';
+  document.getElementById('fd-animstate').classList.add('on');
+  document.getElementById('fd-animstate-txt').textContent='Running';
+  var v=parseFloat(document.getElementById('fdrng').value)||0;
+  fdPlayTimer=setInterval(function(){
+    var speed=parseFloat(document.getElementById('fd-speed').value)||5;
+    v+=speed*0.35; if(v>100) v=0;
+    fdScanToSliderValue(v);
+  },45);
+}
+function pauseFieldAnim(){
+  fdPlaying=false;
+  if(fdPlayTimer){ clearInterval(fdPlayTimer); fdPlayTimer=null; }
+  var btn=document.getElementById('fd-playbtn'); if(btn) btn.innerHTML='\u25B6 Play';
+  var st=document.getElementById('fd-animstate'); if(st) st.classList.remove('on');
+  var tx=document.getElementById('fd-animstate-txt'); if(tx) tx.textContent='Paused';
+}
+
+// Values that used to be drawn inside the canvas as a bottom metrics bar —
+// same numbers, same formulas, now real HTML so the ring owns the canvas.
+function updateFieldReadouts(fGHz,p,amp,s21dB,phaseDeg,QL){
+  document.getElementById('fdfreq').textContent=fGHz.toFixed(3)+' GHz';
+  document.getElementById('fd-maxval').textContent='now: '+amp.toFixed(3);
+  document.getElementById('fd-readouts').innerHTML =
+      '<div class="sw-sitem"><span class="sw-slbl">\u0394f from f\u2081</span><span class="sw-sval">'+((fGHz-p.f0)*1000).toFixed(1)+' MHz</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">|S21| at this f</span><span class="sw-sval">'+s21dB.toFixed(1)+' dB</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Phase</span><span class="sw-sval">'+phaseDeg.toFixed(1)+'\u00b0</span></div>'
+    + '<div class="sw-sitem"><span class="sw-slbl">Q\u1D38</span><span class="sw-sval">'+QL.toFixed(1)+'</span></div>';
+}
 
 function drawField(fGHz, p){
-  document.getElementById('fdfreq').textContent = fGHz.toFixed(3)+' GHz';
   var cvs = document.getElementById('fdcvs');
   var wrap = document.getElementById('fdwrap');
   var CW = wrap.clientWidth||800, CH = wrap.clientHeight||300;
@@ -574,12 +1458,10 @@ function drawField(fGHz, p){
   var s21dB=20*Math.log10(Math.max(amp,1e-12));
   var phaseDeg=Math.atan2(-2*QL*delta,1)*180/Math.PI;
 
-  var barH=48; // bottom metrics bar band, reserved below the ring
-  var cx=CW/2, cy=(CH-barH)/2;
-  // scale is derived from the space actually available above the bar,
-  // so the ring + gap + feed-line + label can never run into it —
-  // regardless of panel height, R, or Lf
-  var scaleH=Math.max(0.6, ((CH-barH)/2 - 62)/(p.R+p.W/2));
+  // The old in-canvas metrics bar is gone (those values are now real HTML
+  // readouts below), so the ring can use the full canvas height.
+  var cx=CW/2, cy=CH/2;
+  var scaleH=Math.max(0.6, (CH/2 - 62)/(p.R+p.W/2));
   var scaleW=(CW*0.17)/(p.R+p.W/2+12);
   var scale=Math.min(scaleH, scaleW);
   var Rpx=p.R*scale;
@@ -643,19 +1525,7 @@ function drawField(fGHz, p){
   }
   ringPort(true,'P1'); ringPort(false,'P2');
 
-  // Bottom metrics bar
-  var by2=CH-barH;
-  ctx.fillStyle='rgba(248,250,252,0.92)'; ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.roundRect(20,by2,CW-40,44,5); ctx.fill(); ctx.stroke();
-  ctx.fillStyle='#0369a1'; ctx.font='11px Courier New'; ctx.textAlign='left';
-  ctx.fillText('|S21| = '+s21dB.toFixed(1)+' dB', 32, by2+15);
-  ctx.fillStyle='rgba(2,132,199,0.15)'; ctx.fillRect(32,by2+20,200,8);
-  ctx.fillStyle='#0284c7'; ctx.fillRect(32,by2+20,Math.max(0,amp*200),8);
-  ctx.strokeStyle='rgba(2,132,199,0.3)'; ctx.lineWidth=0.8; ctx.strokeRect(32,by2+20,200,8);
-  ctx.fillStyle='#b45309'; ctx.font='bold 13px Courier New'; ctx.textAlign='right';
-  ctx.fillText('f = '+fGHz.toFixed(4)+' GHz', CW-20, by2+15);
-  ctx.fillStyle='#475569'; ctx.font='11px Courier New';
-  ctx.fillText('f1='+p.f0.toFixed(4)+'GHz  \u0394f='+((fGHz-p.f0)*1000).toFixed(1)+'MHz  QL='+QL.toFixed(1)+'  phase='+phaseDeg.toFixed(1)+'\u00b0', CW-20, by2+38);
+  updateFieldReadouts(fGHz,p,amp,s21dB,phaseDeg,QL);
 }
 
 function drawEquivCircuit(params){
@@ -755,10 +1625,207 @@ function showRP(id){
   document.querySelectorAll('.rp').forEach(function(el){el.classList.remove('on');});
   document.getElementById(id).classList.add('on');
 }
+
+/* Result-tabs strip (S-Parameters / Equivalent Circuit / Field Distribution).
+   Equivalent Circuit is computed together with the S-parameter sweep (not a
+   separate simulation), so it shares the rp-sp panel and simply scrolls the
+   equivalent-circuit card into view — the underlying simulation calls are
+   untouched. */
+function runResultTab(which){
+  // The Field Distribution tab is now the only way to open field results, so it
+  // must enforce the sweep validation the removed button used to do.
+  if(!validateSweep()) return;
+  // Safety net for direct result-tab clicks (rt-sp/rt-equiv/rt-field), which
+  // bypass handleRunSimulation()/handleFieldDistribution()'s own pre-checks —
+  // never let an impossible geometry silently produce a "real-looking" result.
+  if(!validateDesignParams()){
+    var warn=document.getElementById('dp-warn');
+    if(warn) warn.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.querySelectorAll('.rtab').forEach(function(t){t.classList.remove('on');});
+  if(which==='field'){
+    document.getElementById('rt-field').classList.add('on');
+    runField();
+  } else if(which==='equiv'){
+    if(typeof pauseFieldAnim==='function') pauseFieldAnim();
+    document.getElementById('rt-equiv').classList.add('on');
+    runSparam();
+    setTimeout(function(){
+      var w=document.getElementById('equivcircuit-wrap');
+      if(w) w.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },60);
+  } else {
+    if(typeof pauseFieldAnim==='function') pauseFieldAnim();
+    document.getElementById('rt-sp').classList.add('on');
+    runSparam();
+  }
+  markResultsFresh();
+}
+
+/* ═══════════════════════════════════════════════════════
+   FREQUENCY SWEEP CONTROL PANEL (UI only)
+   Wraps the existing runSparam()/runField()/runResultTab() calls with:
+   inline validation, a live sweep summary, and idle/running/complete
+   button+status states. No frequency generation, S-parameter, or field
+   calculation is touched — this only decides *when* to call the
+   existing, unmodified simulation functions and how to present that.
+═══════════════════════════════════════════════════════ */
+
+var swRunning = false; // guards against duplicate/overlapping runs
+
+function sweepRaw(){
+  return {
+    f1:parseFloat(document.getElementById('fs1').value),
+    f2:parseFloat(document.getElementById('fs2').value),
+    n:parseFloat(document.getElementById('fpts').value)
+  };
+}
+
+function validateSweep(){
+  var v=sweepRaw(), issues=[];
+  function mark(id,msgId,bad,msg){
+    var row=document.getElementById(id), m=document.getElementById(msgId);
+    if(bad){
+      if(row) row.querySelector('.dprow').classList.add('invalid');
+      if(m){ m.textContent='⚠ '+msg; m.classList.add('show'); }
+      issues.push(msg);
+    } else {
+      if(row) row.querySelector('.dprow').classList.remove('invalid');
+      if(m){ m.textContent=''; m.classList.remove('show'); }
+    }
+  }
+  mark('row-fs1','msg-fs1', !(v.f1>0), 'Enter a valid positive frequency');
+  mark('row-fs2','msg-fs2', !(v.f2>0), 'Enter a valid positive frequency');
+  if(v.f1>0 && v.f2>0 && v.f2<=v.f1){
+    mark('row-fs2','msg-fs2', true, 'Stop frequency must be greater than start frequency');
+  }
+  // 51 is the existing floor already baked into runSparam()/runField() (Math.max(51,...));
+  // surfaced here as validation only — the actual clamp value is untouched.
+  mark('row-fpts','msg-fpts', !(v.n>=51), 'Points must be at least 51');
+
+  var warn=document.getElementById('sw-warn'), list=document.getElementById('sw-warn-list');
+  if(issues.length){
+    list.innerHTML=issues.map(function(m){return '<li>'+m+'</li>';}).join('');
+    warn.classList.add('show');
+  } else {
+    list.innerHTML=''; warn.classList.remove('show');
+  }
+  var btn=document.getElementById('btn-run');
+  btn.disabled = issues.length>0;
+  if(issues.length && !swRunning) setSweepStatus('invalid','Fix sweep parameters');
+  else if(!swRunning) setSweepStatus('ready','Ready');
+  return issues.length===0;
+}
+
+function updateSweepSummary(){
+  var v=sweepRaw();
+  var ok = v.f1>0 && v.f2>0 && v.f2>v.f1 && v.n>=2;
+  document.getElementById('sw-range').textContent = ok
+    ? v.f1.toFixed(2)+' \u2192 '+v.f2.toFixed(2)+' GHz' : '\u2014';
+  document.getElementById('sw-points').textContent = isFinite(v.n) ? Math.round(v.n) : '\u2014';
+  if(ok){
+    // display-only step, mirrors the spacing runSparam() already generates
+    // (freqs[k] = f1 + k*(f2-f1)/(n-1)) — not a second calculation of the sweep itself
+    var stepGHz=(v.f2-v.f1)/(Math.round(v.n)-1);
+    document.getElementById('sw-res').textContent = stepGHz<0.001
+      ? (stepGHz*1e6).toFixed(1)+' kHz'
+      : (stepGHz*1000).toFixed(stepGHz*1000<10?2:1)+' MHz';
+  } else {
+    document.getElementById('sw-res').textContent = '\u2014';
+  }
+}
+
+function onSweepInput(){
+  updateSweepSummary();
+  validateSweep();
+}
+
+function setSweepStatus(state,text){
+  var el=document.getElementById('sw-status');
+  el.className='sw-status '+state;
+  document.getElementById('sw-status-text').textContent=text;
+}
+
+function setRunButtonState(state){
+  var btn=document.getElementById('btn-run'), ic=document.getElementById('run-ic'), lbl=document.getElementById('run-label');
+  btn.classList.remove('is-running','is-complete');
+  if(state==='running'){
+    btn.disabled=true;
+    ic.innerHTML='<span class="sbtn-spin"></span>';
+    lbl.textContent='Running Simulation…';
+    btn.classList.add('is-running');
+  } else if(state==='complete'){
+    btn.disabled=false;
+    ic.textContent='✓';
+    lbl.textContent='Simulation Complete';
+    btn.classList.add('is-complete');
+  } else { // idle
+    ic.textContent='▶';
+    lbl.textContent='Run Simulation';
+    btn.disabled = !validateSweep();
+  }
+}
+
+function handleRunSimulation(){
+  if(swRunning) return; // duplicate-click guard
+  if(!validateSweep()) return;
+  if(!validateDesignParams()){ // don't let an impossible geometry produce a "real-looking" result
+    setSweepStatus('invalid','Fix design parameters above');
+    var warn=document.getElementById('dp-warn');
+    if(warn) warn.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  swRunning=true;
+  setRunButtonState('running');
+  setSweepStatus('running','Running simulation\u2026');
+  // Two rAFs let the browser actually paint the "running" state before the
+  // (synchronous, near-instant) simulation call — not a fake delay/progress,
+  // just letting the UI state render before the main thread is used.
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var v=sweepRaw();
+      runResultTab('sp'); // calls the existing, unmodified runSparam()
+      swRunning=false;
+      setRunButtonState('complete');
+      setSweepStatus('complete','Simulation complete');
+      var sub=document.getElementById('sw-status-text');
+      sub.textContent='Simulation complete \u2014 '+Math.max(51,Math.round(v.n)||201)+' points';
+      setTimeout(function(){
+        setRunButtonState('idle');
+        if(!swRunning) validateSweep();
+      },1400);
+    });
+  });
+}
+
+function handleFieldDistribution(){
+  if(swRunning) return;
+  if(!validateSweep()) return;
+  if(!validateDesignParams()){
+    setSweepStatus('invalid','Fix design parameters above');
+    var warn=document.getElementById('dp-warn');
+    if(warn) warn.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  var btn=document.getElementById('btn-field'); // button removed (duplicate of the result tab); kept null-safe
+  if(btn) btn.disabled=true;
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      runResultTab('field'); // calls the existing, unmodified runField()
+      if(btn) btn.disabled=false;
+    });
+  });
+}
+
 function closeRP(id){
   document.getElementById(id).classList.remove('on');
+  if(id==='rp-fd' && typeof pauseFieldAnim==='function') pauseFieldAnim();
   var anyOn=document.querySelectorAll('.rp.on').length>0;
   document.getElementById('idle').style.display=anyOn?'none':'flex';
+  // Part 8 fix: don't leave a result tab looking "active" once its panel is
+  // actually closed and the idle placeholder is what's really showing.
+  if(!anyOn) document.querySelectorAll('.rtab').forEach(function(t){t.classList.remove('on');});
 }
 function showIdle(){
   document.querySelectorAll('.rp').forEach(function(el){el.classList.remove('on');});
@@ -844,9 +1911,9 @@ function ringFormula(){
 ═══════════════════════════════════════════════════════ */
 
 function getRingP(){
-  var W=gv('dp-W')||3, h=gv('dp-h')||1.6, er=gv('dp-er')||4.4;
-  var tand=gv('dp-tand')||0.02, R=gv('dp-Rr')||10.91;
-  var g=gv('dp-gr')||0.3, Wf=gv('dp-Wf')||3, Lf=gv('dp-Lf')||10;
+  var W=gvOr('dp-W',3), h=gvOr('dp-h',1.6), er=gvOr('dp-er',4.4);
+  var tand=gvOr('dp-tand',0.02), R=gvOr('dp-Rr',10.91);
+  var g=gvOr('dp-gr',0.3), Wf=gvOr('dp-Wf',3), Lf=gvOr('dp-Lf',10);
   var rr=msZ0(W,h,er); var Z0=rr.Z0, eref=rr.eref;
   var circ=2*Math.PI*R*1e-3; // circumference in m
   var f0=3e8/(circ*Math.sqrt(eref))/1e9; // n=1 mode
@@ -871,104 +1938,248 @@ function getRingP(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   FILTER — getP branch (Chebyshev synthesis)
+   GEOMETRY CANVAS — RING RESONATOR
+   Pure physical-layout view (top view, mm). No EM/field overlay
+   and no analysis numbers live here — see drawField() / the
+   Calculated Results panel for those. Colors follow the app's
+   existing semantic palette: blue = conductor, amber = feed/port,
+   red = coupling gap, slate = dimensioning, purple-tint = substrate.
 ═══════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════
-   GEOMETRY CANVAS — RING RESONATOR
-═══════════════════════════════════════════════════════ */
+var GEO_FONT_SANS = '"IBM Plex Sans",system-ui,sans-serif';
+var GEO_FONT_MONO = '"JetBrains Mono","Courier New",monospace';
 
 function drawRingGeo(p){
   var cvs=document.getElementById('res-geo-cvs'); if(!cvs)return;
-  var CW=cvs.parentElement.clientWidth||700, CH=230;
+  var CW=cvs.parentElement.clientWidth||700, CH=cvs.parentElement.clientHeight||360;
   cvs.width=CW; cvs.height=CH;
   var ctx=cvs.getContext('2d'); ctx.clearRect(0,0,CW,CH);
-  var cx=CW/2;
-  var badgeH=30; // reserved band at the bottom for the f0/f2/Z0 badge
-  var cy=(CH-badgeH)/2;
-  // scale is derived so that ring + gap + feed-line + label never exceeds
-  // the vertical space above the badge, regardless of R, Lf, or canvas size
-  var scaleH=Math.max(0.5, ((CH-badgeH)/2 - 62)/(p.R+p.W/2));
-  var scaleW=(CW*0.30)/(p.R+p.W/2+8);
+
+  // Same validity condition the parameter panel already flags
+  // (R must exceed W/2, i.e. inner radius > 0). Rendering-only guard —
+  // no physics/values are altered, we simply decline to draw an
+  // impossible ring instead of letting canvas arc() throw.
+  var valid = isFinite(p.R) && isFinite(p.W) && p.R>0 && p.W>0 && (p.R - p.W/2) > 0
+           && isFinite(p.g) && p.g>0 && isFinite(p.Wf) && p.Wf>0;
+  if(!valid){ drawGeoPlaceholder(ctx,CW,CH); return; }
+
+  var cx=CW/2, cy=CH/2;
+  var reservedPx=58; // headroom above/below the ring for gap+feed+port+label
+  var scaleH=Math.max(0.5, (CH/2 - reservedPx)/(p.R+p.W/2));
+  var scaleW=(CW*0.34)/(p.R+p.W/2+10);
   var scale=Math.min(scaleH, scaleW);
-  var Rpx=(p.R)*scale, Wpx=Math.max(4,p.W*scale);
-  var Ri=(p.R-p.W/2)*scale, Ro=(p.R+p.W/2)*scale;
-  // Substrate bg
-  ctx.fillStyle='rgba(99,102,241,0.06)';
-  ctx.fillRect(cx-Ro-30,cy-Ro-30,2*(Ro+30),2*(Ro+30));
-  ctx.strokeStyle='rgba(99,102,241,0.25)'; ctx.lineWidth=0.5;
-  ctx.setLineDash([3,3]); ctx.strokeRect(cx-Ro-30,cy-Ro-30,2*(Ro+30),2*(Ro+30));
-  ctx.setLineDash([]);
-  // Substrate caption — fixed in the top-left corner so it never collides
-  // with the port labels or the frequency badge, no matter the geometry
-  ctx.fillStyle='rgba(71,85,105,0.75)'; ctx.font='10px Courier New'; ctx.textAlign='left';
-  ctx.fillText('Substrate \u03b5r='+p.erRaw+' h='+p.h+'mm', 8, 14);
-  // Ring
-  ctx.beginPath(); ctx.arc(cx,cy,Ro,0,2*Math.PI);
-  ctx.fillStyle='rgba(2,132,199,0.10)'; ctx.fill();
-  ctx.beginPath(); ctx.arc(cx,cy,Ro,0,2*Math.PI);
-  ctx.strokeStyle='#0284c7'; ctx.lineWidth=1.5; ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx,cy,Ri,0,2*Math.PI);
-  ctx.strokeStyle='#0284c7'; ctx.lineWidth=1.5; ctx.stroke();
-  // Standing wave overlay (n=1)
-  ctx.beginPath();
-  for(var i=0;i<=80;i++){
-    var ang=-Math.PI/2+i/80*2*Math.PI;
-    var amp=Math.cos(ang)*0.15*Rpx;
-    var r2=Rpx+amp;
-    var x=cx+r2*Math.cos(ang), y=cy+r2*Math.sin(ang);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-  }
-  ctx.strokeStyle='rgba(124,58,237,0.75)'; ctx.lineWidth=1.8; ctx.stroke();
-  // Gap + feed line pixel sizes are capped so a large g/Lf value can never
-  // push the port labels off-canvas or into the badge band
-  var gapPx=Math.min(8,Math.max(3,p.g*scale));
+
+  var Ro=(p.R+p.W/2)*scale, Ri=(p.R-p.W/2)*scale, stripPx=Ro-Ri;
+  var gapPx=Math.min(10,Math.max(3,p.g*scale));
   var feedWpx=Math.max(4,p.Wf*scale);
-  var lfPx=Math.min(30,Math.max(14,p.Lf*scale*0.55));
-  // Top gap
-  ctx.fillStyle='rgba(148,163,184,0.3)';
-  ctx.fillRect(cx-p.W*scale/2,cy-Ro-gapPx,p.W*scale,gapPx);
-  ctx.strokeStyle='#dc2626'; ctx.lineWidth=0.8;
-  ctx.strokeRect(cx-p.W*scale/2,cy-Ro-gapPx,p.W*scale,gapPx);
-  // Feed line top
-  ctx.fillStyle='rgba(217,119,6,0.15)';
-  ctx.fillRect(cx-feedWpx/2,cy-Ro-gapPx-lfPx,feedWpx,lfPx);
-  ctx.strokeStyle='#d97706'; ctx.lineWidth=1; ctx.strokeRect(cx-feedWpx/2,cy-Ro-gapPx-lfPx,feedWpx,lfPx);
-  ctx.fillStyle='#b45309'; ctx.font='bold 10px Courier New'; ctx.textAlign='center';
-  ctx.fillText('P1',cx,cy-Ro-gapPx-lfPx-4);
-  // Bottom gap
-  ctx.fillStyle='rgba(148,163,184,0.3)';
-  ctx.fillRect(cx-p.W*scale/2,cy+Ro,p.W*scale,gapPx);
-  ctx.strokeStyle='#dc2626'; ctx.lineWidth=0.8;
-  ctx.strokeRect(cx-p.W*scale/2,cy+Ro,p.W*scale,gapPx);
-  // Feed line bottom
-  ctx.fillStyle='rgba(217,119,6,0.15)';
-  ctx.fillRect(cx-feedWpx/2,cy+Ro+gapPx,feedWpx,lfPx);
-  ctx.strokeStyle='#d97706'; ctx.lineWidth=1; ctx.strokeRect(cx-feedWpx/2,cy+Ro+gapPx,feedWpx,lfPx);
-  ctx.fillStyle='#b45309'; ctx.textAlign='center';
-  ctx.fillText('P2',cx,cy+Ro+gapPx+lfPx+10);
-  // Radius annotation
-  ctx.strokeStyle='rgba(51,65,85,0.45)'; ctx.lineWidth=0.6;
-  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Rpx,cy);ctx.stroke();
-  ctx.fillStyle='rgba(51,65,85,0.75)'; ctx.font='10px Courier New'; ctx.textAlign='center';
-  ctx.fillText('R='+p.R.toFixed(2)+'mm',cx+Rpx/2,cy-4);
-  // W annotation
-  ctx.beginPath();ctx.moveTo(cx+Ri,cy);ctx.lineTo(cx+Ro,cy);ctx.stroke();
-  ctx.fillText('W='+p.W+'mm',cx+(Ri+Ro)/2,cy+10);
-  // Gap annotation
-  ctx.fillStyle='rgba(220,38,38,0.75)'; ctx.textAlign='center';
-  ctx.fillText('g='+p.g+'mm',cx+Ro+20,cy-Ro+gapPx/2);
-  // f0 badge — box is sized to the larger font so the text never overflows it
-  var badgeW=Math.min(320, CW-16);
-  ctx.fillStyle='rgba(217,119,6,0.10)';
-  ctx.beginPath(); ctx.roundRect(cx-badgeW/2,CH-24,badgeW,20,4); ctx.fill();
-  ctx.fillStyle='#b45309'; ctx.font='bold 13px Courier New'; ctx.textAlign='center';
-  ctx.fillText('f1='+p.f0.toFixed(4)+'GHz | f2='+p.f2.toFixed(3)+'GHz | Z0='+p.Z0.toFixed(1)+'\u03a9',cx,CH-10);
+  var lfPx=Math.min(38,Math.max(16,p.Lf*scale*0.6));
+
+  // Layers, back to front
+  drawGeoSubstrate(ctx,cx,cy,Ro,p);
+  drawGeoRing(ctx,cx,cy,Ri,Ro);
+  drawGeoFeedLines(ctx,cx,cy,Ro,gapPx,feedWpx,lfPx,stripPx);
+  drawGeoGaps(ctx,cx,cy,Ro,gapPx,stripPx);
+  drawGeoPorts(ctx,cx,cy,Ro,gapPx,lfPx);
+  drawGeoCenterMark(ctx,cx,cy);
+  drawGeoDimensions(ctx,cx,cy,Ri,Ro,gapPx,p);
+  drawGeoLegend(ctx,CW,CH);
+}
+
+function drawGeoPlaceholder(ctx,CW,CH){
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.fillStyle='#cbd5e1';
+  ctx.font='28px '+GEO_FONT_SANS;
+  ctx.fillText('\u25B3', CW/2, CH/2-16);
+  ctx.fillStyle='#475569';
+  ctx.font='600 13px '+GEO_FONT_SANS;
+  ctx.fillText('Geometry unavailable', CW/2, CH/2+10);
+  ctx.fillStyle='#94a3b8';
+  ctx.font='11px '+GEO_FONT_SANS;
+  ctx.fillText('Correct the highlighted parameters to', CW/2, CH/2+29);
+  ctx.fillText('preview the structure.', CW/2, CH/2+44);
+  ctx.restore();
+}
+
+function drawGeoSubstrate(ctx,cx,cy,Ro,p){
+  var pad=30, x=cx-Ro-pad, y=cy-Ro-pad, s=2*(Ro+pad);
+  ctx.fillStyle='rgba(124,58,237,0.045)';
+  ctx.fillRect(x,y,s,s);
+  ctx.strokeStyle='rgba(124,58,237,0.22)'; ctx.lineWidth=0.75;
+  ctx.setLineDash([3,3]); ctx.strokeRect(x,y,s,s); ctx.setLineDash([]);
+  ctx.fillStyle='rgba(71,85,105,0.72)'; ctx.font='10px '+GEO_FONT_MONO; ctx.textAlign='left';
+  ctx.fillText('Substrate \u03b5r='+p.erRaw+' h='+p.h+'mm', 8, 14);
+}
+
+function drawGeoRing(ctx,cx,cy,Ri,Ro){
+  // true annulus fill (outer CW + inner CCW in one path = donut hole)
+  ctx.beginPath();
+  ctx.arc(cx,cy,Ro,0,2*Math.PI,false);
+  ctx.arc(cx,cy,Ri,0,2*Math.PI,true);
+  ctx.closePath();
+  ctx.fillStyle='rgba(2,132,199,0.22)'; ctx.fill();
+  ctx.lineWidth=1.6; ctx.strokeStyle='#0284c7';
+  ctx.beginPath(); ctx.arc(cx,cy,Ro,0,2*Math.PI); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,Ri,0,2*Math.PI); ctx.stroke();
+}
+
+function drawGeoFeedLines(ctx,cx,cy,Ro,gapPx,feedWpx,lfPx){
+  ctx.lineWidth=1; ctx.fillStyle='rgba(217,119,6,0.16)'; ctx.strokeStyle='#d97706';
+  ctx.fillRect(cx-feedWpx/2, cy-Ro-gapPx-lfPx, feedWpx, lfPx);
+  ctx.strokeRect(cx-feedWpx/2, cy-Ro-gapPx-lfPx, feedWpx, lfPx);
+  ctx.fillRect(cx-feedWpx/2, cy+Ro+gapPx, feedWpx, lfPx);
+  ctx.strokeRect(cx-feedWpx/2, cy+Ro+gapPx, feedWpx, lfPx);
+}
+
+function drawGeoGaps(ctx,cx,cy,Ro,gapPx,stripPx){
+  ctx.fillStyle='rgba(220,38,38,0.12)'; ctx.strokeStyle='#dc2626'; ctx.lineWidth=0.9;
+  ctx.setLineDash([2,2]);
+  ctx.fillRect(cx-stripPx/2, cy-Ro-gapPx, stripPx, gapPx);
+  ctx.strokeRect(cx-stripPx/2, cy-Ro-gapPx, stripPx, gapPx);
+  ctx.fillRect(cx-stripPx/2, cy+Ro, stripPx, gapPx);
+  ctx.strokeRect(cx-stripPx/2, cy+Ro, stripPx, gapPx);
+  ctx.setLineDash([]);
+}
+
+function drawGeoPorts(ctx,cx,cy,Ro,gapPx,lfPx){
+  var topY=cy-Ro-gapPx-lfPx, botY=cy+Ro+gapPx+lfPx;
+  ctx.fillStyle='#d97706';
+  ctx.beginPath(); ctx.arc(cx,topY,3,0,2*Math.PI); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,botY,3,0,2*Math.PI); ctx.fill();
+  ctx.textAlign='center'; ctx.font='700 11px '+GEO_FONT_MONO; ctx.fillStyle='#b45309';
+  ctx.fillText('P1', cx, topY-8);
+  ctx.fillText('P2', cx, botY+17);
+}
+
+function drawGeoCenterMark(ctx,cx,cy){
+  ctx.strokeStyle='rgba(71,85,105,0.55)'; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(cx-5,cy); ctx.lineTo(cx+5,cy);
+  ctx.moveTo(cx,cy-5); ctx.lineTo(cx,cy+5);
+  ctx.stroke();
+}
+
+// short perpendicular tick mark at (x,y), oriented along angleDeg
+function geoTick(ctx,x,y,angleDeg,len){
+  var a=angleDeg*Math.PI/180;
+  ctx.beginPath();
+  ctx.moveTo(x-Math.cos(a)*len/2, y-Math.sin(a)*len/2);
+  ctx.lineTo(x+Math.cos(a)*len/2, y+Math.sin(a)*len/2);
+  ctx.stroke();
+}
+// dimension label with a light backing pill so it stays readable over the ring/substrate
+function geoLabel(ctx,x,y,text,color){
+  ctx.font='600 10px '+GEO_FONT_MONO;
+  var w=ctx.measureText(text).width;
+  ctx.fillStyle='rgba(255,255,255,0.88)';
+  ctx.fillRect(x-w/2-3,y-9,w+6,13);
+  ctx.fillStyle=color; ctx.textAlign='center';
+  ctx.fillText(text,x,y+1);
+}
+
+function drawGeoDimensions(ctx,cx,cy,Ri,Ro,gapPx,p){
+  ctx.strokeStyle='rgba(71,85,105,0.5)'; ctx.lineWidth=0.75;
+
+  // R — from the center marker out to the ring's outer edge (diagonal,
+  // so it never collides with the horizontal W line or the vertical g line)
+  var ang=-35*Math.PI/180;
+  var rx=cx+Ro*Math.cos(ang), ry=cy+Ro*Math.sin(ang);
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(rx,ry); ctx.stroke();
+  geoTick(ctx,rx,ry,55,6);
+  geoLabel(ctx,cx+Ro*0.52*Math.cos(ang),cy+Ro*0.52*Math.sin(ang)-7,'R='+p.R.toFixed(2)+'mm','#334155');
+
+  // W — across the strip thickness
+  ctx.beginPath(); ctx.moveTo(cx+Ri,cy); ctx.lineTo(cx+Ro,cy); ctx.stroke();
+  geoTick(ctx,cx+Ri,cy,90,6); geoTick(ctx,cx+Ro,cy,90,6);
+  geoLabel(ctx,cx+(Ri+Ro)/2,cy+16,'W='+p.W.toFixed(2)+'mm','#334155');
+
+  // g — offset dimension beside the top coupling gap, with leader lines
+  // back to the actual gap so it reads clearly without covering it
+  var gx=cx+Ro+18, gy1=cy-Ro, gy2=cy-Ro-gapPx;
+  ctx.beginPath(); ctx.moveTo(cx+Ro,gy1); ctx.lineTo(gx,gy1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+Ro,gy2); ctx.lineTo(gx,gy2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(gx,gy1); ctx.lineTo(gx,gy2); ctx.stroke();
+  geoTick(ctx,gx,gy1,0,5); geoTick(ctx,gx,gy2,0,5);
+  geoLabel(ctx,gx+26,(gy1+gy2)/2+1,'g='+p.g.toFixed(2)+'mm','#b91c1c');
+}
+
+function drawGeoLegend(ctx,CW,CH){
+  var items=[
+    {label:'Ring conductor', color:'#0284c7', dash:false},
+    {label:'Feed line', color:'#d97706', dash:false},
+    {label:'Coupling gap', color:'#dc2626', dash:true}
+  ];
+  var pad=8, lineH=13, boxW=122, boxH=pad*2+items.length*lineH-2;
+  var bx=CW-boxW-8, by=CH-boxH-8;
+  ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=1;
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(bx,by,boxW,boxH,6); else ctx.rect(bx,by,boxW,boxH);
+  ctx.fill(); ctx.stroke();
+  ctx.font='9.5px '+GEO_FONT_SANS; ctx.textAlign='left';
+  items.forEach(function(it,i){
+    var iy=by+pad+i*lineH+7;
+    ctx.strokeStyle=it.color; ctx.lineWidth=2;
+    ctx.setLineDash(it.dash?[2,2]:[]);
+    ctx.beginPath(); ctx.moveTo(bx+8,iy-3); ctx.lineTo(bx+23,iy-3); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#475569';
+    ctx.fillText(it.label, bx+28, iy);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYBOARD ACCESSIBILITY (Part 8 fix)
+   The top nav, result tabs, panel-close buttons and the design-parameters
+   collapse header are <div onclick=...> — clickable with a mouse but
+   invisible to Tab and unusable with a keyboard. This adds tabindex,
+   role="button", and Enter/Space activation without changing any of their
+   existing onclick handlers, IDs, or the functions those handlers call.
+═══════════════════════════════════════════════════════ */
+function enableKeyboardActivation(selector){
+  document.querySelectorAll(selector).forEach(function(el){
+    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+    if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    el.addEventListener('keydown', function(ev){
+      if(ev.key==='Enter' || ev.key===' ' || ev.key==='Spacebar'){
+        ev.preventDefault();
+        el.click();
+      }
+    });
+  });
 }
 
 window.addEventListener('load', function(){
   curMod = 'ring';
   initExperiment();
-});</script>
+  updateSweepSummary();
+  validateSweep();
+  enableKeyboardActivation('.tnav-item, .tnav-ref, .rtab, .rpx, #dphdr');
+});
+
+/* ═══════════════════════════════════════════════════════
+   WINDOW RESIZE (Part 8 fix)
+   Canvases size themselves from their container's pixel box at draw time
+   (see drawRingGeo/drawField), but nothing previously re-ran that draw when
+   the container itself changed size — e.g. resizing the browser, or CSS
+   media-query reflow at a breakpoint — leaving the ring stretched into an
+   ellipse against the new (unequal) width/height. Debounced so a drag-resize
+   doesn't redraw on every intermediate pixel.
+═══════════════════════════════════════════════════════ */
+var resizeDebounce=null;
+window.addEventListener('resize', function(){
+  clearTimeout(resizeDebounce);
+  resizeDebounce=setTimeout(function(){
+    var p=getP(); if(!p) return;
+    try{ drawRingGeo(p); }catch(e){}
+    if(document.getElementById('rp-fd') && document.getElementById('rp-fd').classList.contains('on')){
+      var f=fdFmin+(fdFmax-fdFmin)*((parseFloat(document.getElementById('fdrng').value)||50)/100);
+      drawField(f,p);
+    }
+    ['ch-s11','ch-vswr','ch-gd','ch-sw'].forEach(function(id){
+      if(CH[id]) CH[id].resize();
+    });
+  },150);
+});
+</script>
 </body>
 </html>
